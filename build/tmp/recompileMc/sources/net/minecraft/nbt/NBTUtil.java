@@ -176,9 +176,9 @@ public final class NBTUtil
             NBTTagList nbttaglist = (NBTTagList)nbt1;
             NBTTagList nbttaglist1 = (NBTTagList)nbt2;
 
-            if (nbttaglist.isEmpty())
+            if (nbttaglist.hasNoTags())
             {
-                return nbttaglist1.isEmpty();
+                return nbttaglist1.hasNoTags();
             }
             else
             {

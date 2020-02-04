@@ -33,9 +33,9 @@ public class BlockLilyPad extends BlockBush
     /**
      * Called When an Entity Collided with the Block
      */
-    public void onEntityCollision(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
+    public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
     {
-        super.onEntityCollision(worldIn, pos, state, entityIn);
+        super.onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
 
         if (entityIn instanceof EntityBoat)
         {
@@ -43,10 +43,6 @@ public class BlockLilyPad extends BlockBush
         }
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#getBoundingBox(IBlockAccess,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
-     */
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
         return LILY_PAD_AABB;

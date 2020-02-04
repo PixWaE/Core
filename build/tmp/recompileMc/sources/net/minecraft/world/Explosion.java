@@ -60,7 +60,7 @@ public class Explosion
         this.affectedBlockPositions.addAll(affectedPositions);
     }
 
-    public Explosion(World worldIn, Entity entityIn, double x, double y, double z, float size, boolean causesFire, boolean damagesTerrain)
+    public Explosion(World worldIn, Entity entityIn, double x, double y, double z, float size, boolean flaming, boolean damagesTerrain)
     {
         this.random = new Random();
         this.affectedBlockPositions = Lists.<BlockPos>newArrayList();
@@ -71,7 +71,7 @@ public class Explosion
         this.x = x;
         this.y = y;
         this.z = z;
-        this.causesFire = causesFire;
+        this.causesFire = flaming;
         this.damagesTerrain = damagesTerrain;
         this.position = new Vec3d(this.x, this.y, this.z);
     }

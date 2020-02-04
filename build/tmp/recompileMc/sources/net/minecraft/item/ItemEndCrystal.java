@@ -22,7 +22,7 @@ public class ItemEndCrystal extends Item
 {
     public ItemEndCrystal()
     {
-        this.setTranslationKey("end_crystal");
+        this.setUnlocalizedName("end_crystal");
         this.setCreativeTab(CreativeTabs.DECORATIONS);
     }
 

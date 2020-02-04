@@ -47,9 +47,9 @@ public class ItemMultiTexture extends ItemBlock
      * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have
      * different names based on their damage or NBT.
      */
-    public String getTranslationKey(ItemStack stack)
+    public String getUnlocalizedName(ItemStack stack)
     {
-        return super.getTranslationKey() + "." + this.nameFunction.apply(stack);
+        return super.getUnlocalizedName() + "." + this.nameFunction.apply(stack);
     }
 
     public interface Mapper

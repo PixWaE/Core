@@ -25,7 +25,7 @@ public abstract class NBTBase
     /**
      * Creates a new NBTBase object that corresponds with the passed in id.
      */
-    protected static NBTBase create(byte id)
+    protected static NBTBase createNewByType(byte id)
     {
         switch (id)
         {
@@ -60,9 +60,9 @@ public abstract class NBTBase
         }
     }
 
-    public static String getTypeName(int id)
+    public static String getTagTypeName(int p_193581_0_)
     {
-        switch (id)
+        switch (p_193581_0_)
         {
             case 0:
                 return "TAG_End";
@@ -105,7 +105,7 @@ public abstract class NBTBase
     /**
      * Return whether this compound has no tags.
      */
-    public boolean isEmpty()
+    public boolean hasNoTags()
     {
         return false;
     }

@@ -194,7 +194,7 @@ public class BlockPos extends Vec3i
      */
     public BlockPos offset(EnumFacing facing, int n)
     {
-        return n == 0 ? this : new BlockPos(this.getX() + facing.getXOffset() * n, this.getY() + facing.getYOffset() * n, this.getZ() + facing.getZOffset() * n);
+        return n == 0 ? this : new BlockPos(this.getX() + facing.getFrontOffsetX() * n, this.getY() + facing.getFrontOffsetY() * n, this.getZ() + facing.getFrontOffsetZ() * n);
     }
 
     public BlockPos rotate(Rotation rotationIn)
@@ -542,7 +542,7 @@ public class BlockPos extends Vec3i
 
             public BlockPos.MutableBlockPos move(EnumFacing facing, int n)
             {
-                return this.setPos(this.x + facing.getXOffset() * n, this.y + facing.getYOffset() * n, this.z + facing.getZOffset() * n);
+                return this.setPos(this.x + facing.getFrontOffsetX() * n, this.y + facing.getFrontOffsetY() * n, this.z + facing.getFrontOffsetZ() * n);
             }
 
             public void setY(int yIn)

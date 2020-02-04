@@ -36,13 +36,9 @@ public class BlockDoublePlant extends BlockBush implements IGrowable, net.minecr
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, BlockDoublePlant.EnumPlantType.SUNFLOWER).withProperty(HALF, BlockDoublePlant.EnumBlockHalf.LOWER).withProperty(FACING, EnumFacing.NORTH));
         this.setHardness(0.0F);
         this.setSoundType(SoundType.PLANT);
-        this.setTranslationKey("doublePlant");
+        this.setUnlocalizedName("doublePlant");
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#getBoundingBox(IBlockAccess,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
-     */
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
         return FULL_BLOCK_AABB;
@@ -378,7 +374,7 @@ public class BlockDoublePlant extends BlockBush implements IGrowable, net.minecr
         private static final BlockDoublePlant.EnumPlantType[] META_LOOKUP = new BlockDoublePlant.EnumPlantType[values().length];
         private final int meta;
         private final String name;
-        private final String translationKey;
+        private final String unlocalizedName;
 
         private EnumPlantType(int meta, String name)
         {
@@ -389,7 +385,7 @@ public class BlockDoublePlant extends BlockBush implements IGrowable, net.minecr
         {
             this.meta = meta;
             this.name = name;
-            this.translationKey = unlocalizedName;
+            this.unlocalizedName = unlocalizedName;
         }
 
         public int getMeta()
@@ -417,9 +413,9 @@ public class BlockDoublePlant extends BlockBush implements IGrowable, net.minecr
             return this.name;
         }
 
-        public String getTranslationKey()
+        public String getUnlocalizedName()
         {
-            return this.translationKey;
+            return this.unlocalizedName;
         }
 
         static

@@ -74,7 +74,7 @@ public class Realms
 
     public static String getGameDirectoryPath()
     {
-        return Minecraft.getMinecraft().gameDir.getAbsolutePath();
+        return Minecraft.getMinecraft().mcDataDir.getAbsolutePath();
     }
 
     public static int survivalId()

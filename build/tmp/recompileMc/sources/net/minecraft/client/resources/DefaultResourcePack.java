@@ -46,7 +46,7 @@ public class DefaultResourcePack implements IResourcePack
             }
             else
             {
-                throw new FileNotFoundException(location.getPath());
+                throw new FileNotFoundException(location.getResourcePath());
             }
         }
     }
@@ -61,7 +61,7 @@ public class DefaultResourcePack implements IResourcePack
     @Nullable
     private InputStream getResourceStream(ResourceLocation location)
     {
-        String s = "/assets/" + location.getNamespace() + "/" + location.getPath();
+        String s = "/assets/" + location.getResourceDomain() + "/" + location.getResourcePath();
 
         try
         {
@@ -104,7 +104,7 @@ public class DefaultResourcePack implements IResourcePack
 
     public BufferedImage getPackImage() throws IOException
     {
-        return TextureUtil.readBufferedImage(DefaultResourcePack.class.getResourceAsStream("/" + (new ResourceLocation("pack.png")).getPath()));
+        return TextureUtil.readBufferedImage(DefaultResourcePack.class.getResourceAsStream("/" + (new ResourceLocation("pack.png")).getResourcePath()));
     }
 
     public String getPackName()

@@ -122,8 +122,6 @@ public class FMLTweaker implements ITweaker {
 
         Yggdrasil.login(launchArgs);
 
-        Launch.blackboard.put("forgeLaunchArgs", Maps.newHashMap(launchArgs));
-
         try
         {
             jarLocation = getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
@@ -145,11 +143,6 @@ public class FMLTweaker implements ITweaker {
     @Override
     public String getLaunchTarget()
     {
-        // Remove the extraneous mods and modListFile args
-        @SuppressWarnings("unchecked")
-        Map<String,String> args = (Map<String, String>) Launch.blackboard.get("launchArgs");
-        args.remove("--modListFile");
-        args.remove("--mods");
         return "net.minecraft.client.main.Main";
     }
 
@@ -161,10 +154,11 @@ public class FMLTweaker implements ITweaker {
 
         for (Entry<String, String> arg : launchArgs.entrySet())
         {
+            if ("--modListFile".equals(arg.getKey()) || "--mods".equals(arg.getKey()))
+                continue;
             args.add(arg.getKey());
             args.add(arg.getValue());
         }
-        launchArgs.clear();
 
         return args.toArray(new String[args.size()]);
     }

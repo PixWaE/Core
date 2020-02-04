@@ -96,7 +96,7 @@ public class ParticleSimpleAnimated extends Particle
         }
     }
 
-    public int getBrightnessForRender(float partialTick)
+    public int getBrightnessForRender(float p_189214_1_)
     {
         return 15728880;
     }

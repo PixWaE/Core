@@ -23,10 +23,10 @@ public class PaintingDirection implements IFixableData
 
             if (compound.hasKey("Direction", 99))
             {
-                enumfacing = EnumFacing.byHorizontalIndex(compound.getByte("Direction"));
-                compound.setInteger("TileX", compound.getInteger("TileX") + enumfacing.getXOffset());
-                compound.setInteger("TileY", compound.getInteger("TileY") + enumfacing.getYOffset());
-                compound.setInteger("TileZ", compound.getInteger("TileZ") + enumfacing.getZOffset());
+                enumfacing = EnumFacing.getHorizontal(compound.getByte("Direction"));
+                compound.setInteger("TileX", compound.getInteger("TileX") + enumfacing.getFrontOffsetX());
+                compound.setInteger("TileY", compound.getInteger("TileY") + enumfacing.getFrontOffsetY());
+                compound.setInteger("TileZ", compound.getInteger("TileZ") + enumfacing.getFrontOffsetZ());
                 compound.removeTag("Direction");
 
                 if (flag1 && compound.hasKey("ItemRotation", 99))
@@ -36,7 +36,7 @@ public class PaintingDirection implements IFixableData
             }
             else
             {
-                enumfacing = EnumFacing.byHorizontalIndex(compound.getByte("Dir"));
+                enumfacing = EnumFacing.getHorizontal(compound.getByte("Dir"));
                 compound.removeTag("Dir");
             }
 

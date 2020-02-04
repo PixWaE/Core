@@ -58,7 +58,7 @@ public class SimpleReloadableResourceManager implements IReloadableResourceManag
 
     public IResource getResource(ResourceLocation location) throws IOException
     {
-        IResourceManager iresourcemanager = this.domainResourceManagers.get(location.getNamespace());
+        IResourceManager iresourcemanager = this.domainResourceManagers.get(location.getResourceDomain());
 
         if (iresourcemanager != null)
         {
@@ -70,13 +70,9 @@ public class SimpleReloadableResourceManager implements IReloadableResourceManag
         }
     }
 
-    /**
-     * Gets all versions of the resource identified by {@code location}. The list is ordered by resource pack priority
-     * from lowest to highest.
-     */
     public List<IResource> getAllResources(ResourceLocation location) throws IOException
     {
-        IResourceManager iresourcemanager = this.domainResourceManagers.get(location.getNamespace());
+        IResourceManager iresourcemanager = this.domainResourceManagers.get(location.getResourceDomain());
 
         if (iresourcemanager != null)
         {
@@ -94,9 +90,6 @@ public class SimpleReloadableResourceManager implements IReloadableResourceManag
         this.setResourceDomains.clear();
     }
 
-    /**
-     * Releases all current resource packs, loads the given list, then triggers all listeners
-     */
     public void reloadResources(List<IResourcePack> resourcesPacksList)
     {
         net.minecraftforge.fml.common.ProgressManager.ProgressBar resReload = net.minecraftforge.fml.common.ProgressManager.push("Loading Resources", resourcesPacksList.size()+1, true);
@@ -120,10 +113,6 @@ public class SimpleReloadableResourceManager implements IReloadableResourceManag
         net.minecraftforge.fml.common.ProgressManager.pop(resReload);
     }
 
-    /**
-     * Registers a listener to be invoked every time the resource manager reloads. NOTE: The listener is immediately
-     * invoked once when it is registered.
-     */
     public void registerReloadListener(IResourceManagerReloadListener reloadListener)
     {
         net.minecraftforge.fml.common.ProgressManager.ProgressBar resReload = net.minecraftforge.fml.common.ProgressManager.push("Loading Resource", 1);

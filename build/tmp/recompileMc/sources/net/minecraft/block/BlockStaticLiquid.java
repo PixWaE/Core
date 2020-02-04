@@ -36,14 +36,14 @@ public class BlockStaticLiquid extends BlockLiquid
 
     private void updateLiquid(World worldIn, BlockPos pos, IBlockState state)
     {
-        BlockDynamicLiquid blockdynamicliquid = getFlowingBlock(this.material);
+        BlockDynamicLiquid blockdynamicliquid = getFlowingBlock(this.blockMaterial);
         worldIn.setBlockState(pos, blockdynamicliquid.getDefaultState().withProperty(LEVEL, state.getValue(LEVEL)), 2);
         worldIn.scheduleUpdate(pos, blockdynamicliquid, this.tickRate(worldIn));
     }
 
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
     {
-        if (this.material == Material.LAVA)
+        if (this.blockMaterial == Material.LAVA)
         {
             if (worldIn.getGameRules().getBoolean("doFireTick"))
             {

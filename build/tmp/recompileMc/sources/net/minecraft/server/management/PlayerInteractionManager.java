@@ -57,7 +57,7 @@ public class PlayerInteractionManager
         this.gameType = type;
         type.configurePlayerCapabilities(this.player.capabilities);
         this.player.sendPlayerAbilities();
-        this.player.server.getPlayerList().sendPacketToAllPlayers(new SPacketPlayerListItem(SPacketPlayerListItem.Action.UPDATE_GAME_MODE, new EntityPlayerMP[] {this.player}));
+        this.player.mcServer.getPlayerList().sendPacketToAllPlayers(new SPacketPlayerListItem(SPacketPlayerListItem.Action.UPDATE_GAME_MODE, new EntityPlayerMP[] {this.player}));
         this.world.updateAllPlayersSleepingFlag();
     }
 
@@ -295,7 +295,7 @@ public class PlayerInteractionManager
 
         if (flag)
         {
-            iblockstate.getBlock().onPlayerDestroy(this.world, pos, iblockstate);
+            iblockstate.getBlock().onBlockDestroyedByPlayer(this.world, pos, iblockstate);
         }
 
         return flag;

@@ -55,11 +55,11 @@ public class SoundHandler implements IResourceManagerReloadListener, ITickable
     };
     private final SoundRegistry soundRegistry = new SoundRegistry();
     private final SoundManager sndManager;
-    private final IResourceManager resourceManager;
+    private final IResourceManager mcResourceManager;
 
     public SoundHandler(IResourceManager manager, GameSettings gameSettingsIn)
     {
-        this.resourceManager = manager;
+        this.mcResourceManager = manager;
         this.sndManager = new SoundManager(this, gameSettingsIn);
     }
 
@@ -224,7 +224,7 @@ public class SoundHandler implements IResourceManagerReloadListener, ITickable
 
         try
         {
-            iresource = this.resourceManager.getResource(resourcelocation);
+            iresource = this.mcResourceManager.getResource(resourcelocation);
             iresource.getInputStream();
             return true;
         }

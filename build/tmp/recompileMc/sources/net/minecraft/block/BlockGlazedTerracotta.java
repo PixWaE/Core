@@ -22,12 +22,12 @@ public class BlockGlazedTerracotta extends BlockHorizontal
         super(Material.ROCK, MapColor.getBlockColor(color));
         this.setHardness(1.4F);
         this.setSoundType(SoundType.STONE);
-        String s = color.getTranslationKey();
+        String s = color.getUnlocalizedName();
 
         if (s.length() > 1)
         {
             String s1 = s.substring(0, 1).toUpperCase() + s.substring(1, s.length());
-            this.setTranslationKey("glazedTerracotta" + s1);
+            this.setUnlocalizedName("glazedTerracotta" + s1);
         }
 
         this.setCreativeTab(CreativeTabs.DECORATIONS);
@@ -41,8 +41,6 @@ public class BlockGlazedTerracotta extends BlockHorizontal
     /**
      * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed
      * blockstate.
-     * @deprecated call via {@link IBlockState#withRotation(Rotation)} whenever possible. Implementing/overriding is
-     * fine.
      */
     public IBlockState withRotation(IBlockState state, Rotation rot)
     {
@@ -52,7 +50,6 @@ public class BlockGlazedTerracotta extends BlockHorizontal
     /**
      * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed
      * blockstate.
-     * @deprecated call via {@link IBlockState#withMirror(Mirror)} whenever possible. Implementing/overriding is fine.
      */
     public IBlockState withMirror(IBlockState state, Mirror mirrorIn)
     {
@@ -83,13 +80,10 @@ public class BlockGlazedTerracotta extends BlockHorizontal
      */
     public IBlockState getStateFromMeta(int meta)
     {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta));
+        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#getMobilityFlag()} whenever possible. Implementing/overriding is fine.
-     */
-    public EnumPushReaction getPushReaction(IBlockState state)
+    public EnumPushReaction getMobilityFlag(IBlockState state)
     {
         return EnumPushReaction.PUSH_ONLY;
     }

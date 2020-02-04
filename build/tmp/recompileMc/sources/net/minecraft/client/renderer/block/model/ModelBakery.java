@@ -168,7 +168,7 @@ public class ModelBakery
 
     protected void loadVariantItemModels()
     {
-        this.variants.put(MODEL_MISSING, new VariantList(Lists.newArrayList(new Variant(new ResourceLocation(MODEL_MISSING.getPath()), ModelRotation.X0_Y0, false, 1))));
+        this.variants.put(MODEL_MISSING, new VariantList(Lists.newArrayList(new Variant(new ResourceLocation(MODEL_MISSING.getResourcePath()), ModelRotation.X0_Y0, false, 1))));
         this.loadStaticModels();
         this.loadVariantModels();
         this.loadMultipartVariantModels();
@@ -255,7 +255,7 @@ public class ModelBakery
 
     private ResourceLocation getBlockstateLocation(ResourceLocation location)
     {
-        return new ResourceLocation(location.getNamespace(), "blockstates/" + location.getPath() + ".json");
+        return new ResourceLocation(location.getResourceDomain(), "blockstates/" + location.getResourcePath() + ".json");
     }
 
     protected void loadVariantModels()
@@ -307,7 +307,7 @@ public class ModelBakery
 
         try
         {
-            String s = location.getPath();
+            String s = location.getResourcePath();
 
             if (!"builtin/generated".equals(s))
             {
@@ -354,7 +354,7 @@ public class ModelBakery
 
     protected ResourceLocation getModelLocation(ResourceLocation location)
     {
-        return new ResourceLocation(location.getNamespace(), "models/" + location.getPath() + ".json");
+        return new ResourceLocation(location.getResourceDomain(), "models/" + location.getResourcePath() + ".json");
     }
 
     protected void loadItemModels()
@@ -474,7 +474,7 @@ public class ModelBakery
     protected ResourceLocation getItemLocation(String location)
     {
         ResourceLocation resourcelocation = new ResourceLocation(location.replaceAll("#.*", ""));
-        return new ResourceLocation(resourcelocation.getNamespace(), "item/" + resourcelocation.getPath());
+        return new ResourceLocation(resourcelocation.getResourceDomain(), "item/" + resourcelocation.getResourcePath());
     }
 
     private void bakeBlockModels()
@@ -705,14 +705,14 @@ public class ModelBakery
         }
     }
 
-    private BakedQuad makeBakedQuad(BlockPart blockPartt, BlockPartFace blockPartFaceIn, TextureAtlasSprite sprite, EnumFacing face, ModelRotation transform, boolean uvLocked)
+    private BakedQuad makeBakedQuad(BlockPart p_177589_1_, BlockPartFace p_177589_2_, TextureAtlasSprite p_177589_3_, EnumFacing p_177589_4_, ModelRotation p_177589_5_, boolean p_177589_6_)
     {
-        return makeBakedQuad(blockPartt, blockPartFaceIn, sprite, face, (net.minecraftforge.common.model.ITransformation)transform, uvLocked);
+        return makeBakedQuad(p_177589_1_, p_177589_2_, p_177589_3_, p_177589_4_, (net.minecraftforge.common.model.ITransformation)p_177589_5_, p_177589_6_);
     }
 
-    protected BakedQuad makeBakedQuad(BlockPart blockPartt, BlockPartFace blockPartFaceIn, TextureAtlasSprite sprite, EnumFacing face, net.minecraftforge.common.model.ITransformation transform, boolean uvLocked)
+    protected BakedQuad makeBakedQuad(BlockPart p_177589_1_, BlockPartFace p_177589_2_, TextureAtlasSprite p_177589_3_, EnumFacing p_177589_4_, net.minecraftforge.common.model.ITransformation p_177589_5_, boolean p_177589_6_)
     {
-        return this.faceBakery.makeBakedQuad(blockPartt.positionFrom, blockPartt.positionTo, blockPartFaceIn, sprite, face, transform, blockPartt.partRotation, uvLocked, blockPartt.shade);
+        return this.faceBakery.makeBakedQuad(p_177589_1_.positionFrom, p_177589_1_.positionTo, p_177589_2_, p_177589_3_, p_177589_4_, p_177589_5_, p_177589_1_.partRotation, p_177589_6_, p_177589_1_.shade);
     }
 
     private void loadModelsCheck()

@@ -27,6 +27,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector4f;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -39,8 +40,6 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-import net.minecraftforge.client.model.pipeline.TRSRTransformer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.model.IModelState;
@@ -108,10 +107,10 @@ public final class ModelFluid implements IModel
         @Override
         public boolean accepts(ResourceLocation modelLocation)
         {
-            return modelLocation.getNamespace().equals(ForgeVersion.MOD_ID) && (
-                modelLocation.getPath().equals("fluid") ||
-                modelLocation.getPath().equals("models/block/fluid") ||
-                modelLocation.getPath().equals("models/item/fluid"));
+            return modelLocation.getResourceDomain().equals(ForgeVersion.MOD_ID) && (
+                modelLocation.getResourcePath().equals("fluid") ||
+                modelLocation.getResourcePath().equals("models/block/fluid") ||
+                modelLocation.getResourcePath().equals("models/item/fluid"));
         }
 
         @Override
@@ -347,7 +346,7 @@ public final class ModelFluid implements IModel
                 // sides
                 for (int i = 0; i < 4; i++)
                 {
-                    EnumFacing side = EnumFacing.byHorizontalIndex((5 - i) % 4); // [W, S, E, N]
+                    EnumFacing side = EnumFacing.getHorizontal((5 - i) % 4); // [W, S, E, N]
                     boolean useOverlay = overlay.isPresent() && sideOverlays[side.getHorizontalIndex()];
                     int si = i; // local var for lambda capture
 
@@ -391,19 +390,15 @@ public final class ModelFluid implements IModel
         private BakedQuad buildQuad(EnumFacing side, TextureAtlasSprite texture, boolean flip, boolean offset, VertexParameter x, VertexParameter y, VertexParameter z, VertexParameter u, VertexParameter v)
         {
             UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
-
             builder.setQuadOrientation(side);
             builder.setTexture(texture);
             builder.setQuadTint(0);
-
-            boolean hasTransform = transformation.isPresent() && !transformation.get().isIdentity();
-            IVertexConsumer consumer = hasTransform ? new TRSRTransformer(builder, transformation.get()) : builder;
 
             for (int i = 0; i < 4; i++)
             {
                 int vertex = flip ? 3 - i : i;
                 putVertex(
-                    consumer, side, offset,
+                    builder, side, offset,
                     x.get(vertex), y.get(vertex), z.get(vertex),
                     texture.getInterpolatedU(u.get(vertex)),
                     texture.getInterpolatedV(v.get(vertex))
@@ -413,7 +408,7 @@ public final class ModelFluid implements IModel
             return builder.build();
         }
 
-        private void putVertex(IVertexConsumer consumer, EnumFacing side, boolean offset, float x, float y, float z, float u, float v)
+        private void putVertex(UnpackedBakedQuad.Builder builder, EnumFacing side, boolean offset, float x, float y, float z, float u, float v)
         {
             for(int e = 0; e < format.getElementCount(); e++)
             {
@@ -423,30 +418,32 @@ public final class ModelFluid implements IModel
                     float dx = offset ? side.getDirectionVec().getX() * eps : 0f;
                     float dy = offset ? side.getDirectionVec().getY() * eps : 0f;
                     float dz = offset ? side.getDirectionVec().getZ() * eps : 0f;
-                    consumer.put(e, x - dx, y - dy, z - dz, 1f);
+                    float[] data = { x - dx, y - dy, z - dz, 1f };
+                    if(transformation.isPresent() && !transformation.get().isIdentity())
+                    {
+                        Vector4f vec = new Vector4f(data);
+                        transformation.get().getMatrix().transform(vec);
+                        vec.get(data);
+                    }
+                    builder.put(e, data);
                     break;
                 case COLOR:
-                    float r = ((color >> 16) & 0xFF) / 255f;
-                    float g = ((color >>  8) & 0xFF) / 255f;
-                    float b = ( color        & 0xFF) / 255f;
-                    float a = ((color >> 24) & 0xFF) / 255f;
-                    consumer.put(e, r, g, b, a);
+                    builder.put(e,
+                        ((color >> 16) & 0xFF) / 255f,
+                        ((color >> 8) & 0xFF) / 255f,
+                        (color & 0xFF) / 255f,
+                        ((color >> 24) & 0xFF) / 255f);
                     break;
+                case UV: if(format.getElement(e).getIndex() == 0)
+                {
+                    builder.put(e, u, v, 0f, 1f);
+                    break;
+                }
                 case NORMAL:
-                    float offX = (float) side.getXOffset();
-                    float offY = (float) side.getYOffset();
-                    float offZ = (float) side.getZOffset();
-                    consumer.put(e, offX, offY, offZ, 0f);
+                    builder.put(e, (float)side.getFrontOffsetX(), (float)side.getFrontOffsetY(), (float)side.getFrontOffsetZ(), 0f);
                     break;
-                case UV:
-                    if(format.getElement(e).getIndex() == 0)
-                    {
-                        consumer.put(e, u, v, 0f, 1f);
-                        break;
-                    }
-                    // else fallthrough to default
                 default:
-                    consumer.put(e);
+                    builder.put(e);
                     break;
                 }
             }

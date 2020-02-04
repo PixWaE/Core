@@ -700,7 +700,7 @@ public class FMLClientHandler implements IFMLSidedHandler
 
     public File getSavesDir()
     {
-        return new File(client.gameDir, "saves");
+        return new File(client.mcDataDir, "saves");
     }
     public void tryLoadExistingWorld(GuiWorldSelection selectWorldGUI, WorldSummary comparator)
     {
@@ -936,18 +936,18 @@ public class FMLClientHandler implements IFMLSidedHandler
 
     public void trackMissingTexture(ResourceLocation resourceLocation)
     {
-        badTextureDomains.add(resourceLocation.getNamespace());
-        missingTextures.put(resourceLocation.getNamespace(),resourceLocation);
+        badTextureDomains.add(resourceLocation.getResourceDomain());
+        missingTextures.put(resourceLocation.getResourceDomain(),resourceLocation);
     }
 
     public void trackBrokenTexture(ResourceLocation resourceLocation, String error)
     {
-        badTextureDomains.add(resourceLocation.getNamespace());
-        Set<ResourceLocation> badType = brokenTextures.get(resourceLocation.getNamespace(), error);
+        badTextureDomains.add(resourceLocation.getResourceDomain());
+        Set<ResourceLocation> badType = brokenTextures.get(resourceLocation.getResourceDomain(), error);
         if (badType == null)
         {
             badType = Sets.newHashSet();
-            brokenTextures.put(resourceLocation.getNamespace(), MoreObjects.firstNonNull(error, "Unknown error"), badType);
+            brokenTextures.put(resourceLocation.getResourceDomain(), MoreObjects.firstNonNull(error, "Unknown error"), badType);
         }
         badType.add(resourceLocation);
     }
@@ -961,7 +961,7 @@ public class FMLClientHandler implements IFMLSidedHandler
         Logger logger = LogManager.getLogger("FML.TEXTURE_ERRORS");
         logger.error(Strings.repeat("+=", 25));
         logger.error("The following texture errors were found.");
-        Map<String,FallbackResourceManager> resManagers = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, (SimpleReloadableResourceManager)Minecraft.getMinecraft().getResourceManager(), "field_110548"+"_a");
+        Map<String,FallbackResourceManager> resManagers = ObfuscationReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, (SimpleReloadableResourceManager)Minecraft.getMinecraft().getResourceManager(), "domainResourceManagers", "field_110548"+"_a");
         for (String resourceDomain : badTextureDomains)
         {
             Set<ResourceLocation> missing = missingTextures.get(resourceDomain);
@@ -976,7 +976,7 @@ public class FMLClientHandler implements IFMLSidedHandler
             }
             else
             {
-                List<IResourcePack> resPacks = ObfuscationReflectionHelper.getPrivateValue(FallbackResourceManager.class, fallbackResourceManager, "field_110540"+"_a");
+                List<IResourcePack> resPacks = ObfuscationReflectionHelper.getPrivateValue(FallbackResourceManager.class, fallbackResourceManager, "resourcePacks","field_110540"+"_a");
                 logger.error("    domain {} has {} location{}:",resourceDomain, resPacks.size(), resPacks.size() != 1 ? "s" :"");
                 for (IResourcePack resPack : resPacks)
                 {
@@ -988,7 +988,7 @@ public class FMLClientHandler implements IFMLSidedHandler
                     else if (resPack instanceof AbstractResourcePack)
                     {
                         AbstractResourcePack resourcePack = (AbstractResourcePack) resPack;
-                        File resPath = ObfuscationReflectionHelper.getPrivateValue(AbstractResourcePack.class, resourcePack, "field_110597"+"_b");
+                        File resPath = ObfuscationReflectionHelper.getPrivateValue(AbstractResourcePack.class, resourcePack, "resourcePackFile","field_110597"+"_b");
                         logger.error("      resource pack at path {}",resPath.getPath());
                     }
                     else
@@ -1001,7 +1001,7 @@ public class FMLClientHandler implements IFMLSidedHandler
             if (missingTextures.containsKey(resourceDomain)) {
                 logger.error("    The missing resources for domain {} are:", resourceDomain);
                 for (ResourceLocation rl : missing) {
-                    logger.error("      {}", rl.getPath());
+                    logger.error("      {}", rl.getResourcePath());
                 }
                 logger.error(Strings.repeat("-", 25));
             }
@@ -1019,7 +1019,7 @@ public class FMLClientHandler implements IFMLSidedHandler
                     logger.error("    Problem: {}", error);
                     for (ResourceLocation rl : resourceErrs.get(error))
                     {
-                        logger.error("      {}",rl.getPath());
+                        logger.error("      {}",rl.getResourcePath());
                     }
                 }
             }

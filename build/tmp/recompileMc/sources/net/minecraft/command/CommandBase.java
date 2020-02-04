@@ -910,7 +910,7 @@ public abstract class CommandBase implements ICommand
             {
                 for (Object object : possibleCompletions)
                 {
-                    if (object instanceof ResourceLocation && doesStringStartWith(s, ((ResourceLocation)object).getPath()))
+                    if (object instanceof ResourceLocation && doesStringStartWith(s, ((ResourceLocation)object).getResourcePath()))
                     {
                         list.add(String.valueOf(object));
                     }

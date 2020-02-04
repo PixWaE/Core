@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -652,10 +650,7 @@ public class Loader
             FMLLog.log.trace("Found a mod state file {}", forcedModFile.getName());
             try
             {
-                try (Reader reader = new InputStreamReader(new FileInputStream(forcedModFile), StandardCharsets.UTF_8))
-                {
-                    forcedModListProperties.load(reader);
-                }
+                forcedModListProperties.load(new InputStreamReader(new FileInputStream(forcedModFile), StandardCharsets.UTF_8));
                 FMLLog.log.trace("Loaded states for {} mods from file", forcedModListProperties.size());
             }
             catch (Exception e)
@@ -794,8 +789,16 @@ public class Loader
 
     public boolean serverStarting(Object server)
     {
-        modController.distributeStateMessage(LoaderState.SERVER_STARTING, server);
-        modController.transition(LoaderState.SERVER_STARTING, false);
+        try
+        {
+            modController.distributeStateMessage(LoaderState.SERVER_STARTING, server);
+            modController.transition(LoaderState.SERVER_STARTING, false);
+        }
+        catch (Throwable t)
+        {
+            FMLLog.log.error("A fatal exception occurred during the server starting event", t);
+            return false;
+        }
         return true;
     }
 
@@ -856,8 +859,16 @@ public class Loader
 
     public boolean serverAboutToStart(Object server)
     {
-        modController.distributeStateMessage(LoaderState.SERVER_ABOUT_TO_START, server);
-        modController.transition(LoaderState.SERVER_ABOUT_TO_START, false);
+        try
+        {
+            modController.distributeStateMessage(LoaderState.SERVER_ABOUT_TO_START, server);
+            modController.transition(LoaderState.SERVER_ABOUT_TO_START, false);
+        }
+        catch (Throwable t)
+        {
+            FMLLog.log.error("A fatal exception occurred during the server about to start event", t);
+            return false;
+        }
         return true;
     }
 
@@ -868,10 +879,7 @@ public class Loader
             Properties loaded = new Properties();
             try
             {
-                try (InputStream stream = getClass().getClassLoader().getResourceAsStream("fmlbranding.properties"))
-                {
-                    loaded.load(stream);
-                }
+                loaded.load(getClass().getClassLoader().getResourceAsStream("fmlbranding.properties"));
             }
             catch (Exception e)
             {
@@ -943,15 +951,9 @@ public class Loader
         try
         {
             Properties props = new Properties();
-            try (Reader reader = new InputStreamReader(new FileInputStream(forcedModFile), StandardCharsets.UTF_8))
-            {
-                props.load(reader);
-            }
+            props.load(new InputStreamReader(new FileInputStream(forcedModFile), StandardCharsets.UTF_8));
             props.put(modId, "false");
-            try (Writer writer = new OutputStreamWriter(new FileOutputStream(forcedModFile), StandardCharsets.UTF_8))
-            {
-                props.store(writer, null);
-            }
+            props.store(new OutputStreamWriter(new FileOutputStream(forcedModFile), StandardCharsets.UTF_8), null);
         }
         catch (Exception e)
         {
@@ -980,10 +982,7 @@ public class Loader
         JsonElement injectedDeps;
         try
         {
-            try (Reader reader = new InputStreamReader(new FileInputStream(injectedDepFile), StandardCharsets.UTF_8))
-            {
-                injectedDeps = parser.parse(reader);
-            }
+            injectedDeps = parser.parse(new InputStreamReader(new FileInputStream(injectedDepFile), StandardCharsets.UTF_8));
             for (JsonElement el : injectedDeps.getAsJsonArray())
             {
                 JsonObject jo = el.getAsJsonObject();

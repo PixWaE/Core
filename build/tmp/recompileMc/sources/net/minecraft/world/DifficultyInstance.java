@@ -59,7 +59,7 @@ public class DifficultyInstance
             }
 
             f = f + f2;
-            return (float)difficulty.getId() * f;
+            return (float)difficulty.getDifficultyId() * f;
         }
     }
 }

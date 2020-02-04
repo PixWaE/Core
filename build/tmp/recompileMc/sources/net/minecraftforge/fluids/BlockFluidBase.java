@@ -31,7 +31,6 @@ import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockStairs;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyInteger;
@@ -163,9 +162,9 @@ public abstract class BlockFluidBase extends Block implements IFluidBlock
      */
     protected final Fluid definedFluid;
 
-    public BlockFluidBase(Fluid fluid, Material material, MapColor mapColor)
+    public BlockFluidBase(Fluid fluid, Material material)
     {
-        super(material, mapColor);
+        super(material);
         this.setTickRandomly(true);
         this.disableStats();
 
@@ -180,11 +179,6 @@ public abstract class BlockFluidBase extends Block implements IFluidBlock
         this.definedFluid = fluid;
         displacements.putAll(defaultDisplacements);
         this.setDefaultState(blockState.getBaseState().withProperty(LEVEL, getMaxRenderHeightMeta()));
-    }
-
-    public BlockFluidBase(Fluid fluid, Material material)
-    {
-        this(fluid, material, material.getMaterialMapColor());
     }
 
     @Override
@@ -417,7 +411,6 @@ public abstract class BlockFluidBase extends Block implements IFluidBlock
 
     /**
      * Used to determine ambient occlusion and culling when rebuilding chunks for render
-     * @deprecated call via {@link IBlockState#isOpaqueCube()} whenever possible. Implementing/overriding is fine.
      */
     @Override
     public boolean isOpaqueCube(@Nonnull IBlockState state)
@@ -425,24 +418,17 @@ public abstract class BlockFluidBase extends Block implements IFluidBlock
         return false;
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#isFullCube()} whenever possible. Implementing/overriding is fine.
-     */
     @Override
     public boolean isFullCube(@Nonnull IBlockState state)
     {
         return false;
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#getPackedLightmapCoords(IBlockAccess,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
-     */
     @Override
     public int getPackedLightmapCoords(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos)
     {
         int lightThis     = world.getCombinedLight(pos, 0);
-        int lightUp       = world.getCombinedLight(pos.down(densityDir), 0);
+        int lightUp       = world.getCombinedLight(pos.up(), 0);
         int lightThisBase = lightThis & 255;
         int lightUpBase   = lightUp & 255;
         int lightThisExt  = lightThis >> 16 & 255;
@@ -451,14 +437,10 @@ public abstract class BlockFluidBase extends Block implements IFluidBlock
                ((lightThisExt > lightUpExt ? lightThisExt : lightUpExt) << 16);
     }
 
-    /**
-     * Gets the render layer this block will render on. SOLID for solid blocks, CUTOUT or CUTOUT_MIPPED for on-off
-     * transparency (glass, reeds), TRANSLUCENT for fully blended transparency (stained glass)
-     */
     @Override
     @SideOnly(Side.CLIENT)
     @Nonnull
-    public BlockRenderLayer getRenderLayer()
+    public BlockRenderLayer getBlockLayer()
     {
         return this.renderLayer;
     }
@@ -471,8 +453,6 @@ public abstract class BlockFluidBase extends Block implements IFluidBlock
      * does not fit the other descriptions and will generally cause other things not to connect to the face.
      * 
      * @return an approximation of the form of the given face
-     * @deprecated call via {@link IBlockState#getBlockFaceShape(IBlockAccess,BlockPos,EnumFacing)} whenever possible.
-     * Implementing/overriding is fine.
      */
     @Override
     @Nonnull
@@ -481,10 +461,6 @@ public abstract class BlockFluidBase extends Block implements IFluidBlock
         return BlockFaceShape.UNDEFINED;
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#shouldSideBeRendered(IBlockAccess,BlockPos,EnumFacing)} whenever
-     * possible. Implementing/overriding is fine.
-     */
     @Override
     public boolean shouldSideBeRendered(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull EnumFacing side)
     {
@@ -575,7 +551,7 @@ public abstract class BlockFluidBase extends Block implements IFluidBlock
 
         for (int i = 0; i < 4; i++)
         {
-            EnumFacing side = EnumFacing.byHorizontalIndex(i);
+            EnumFacing side = EnumFacing.getHorizontal(i);
             BlockPos offset = pos.offset(side);
             boolean useOverlay = world.getBlockState(offset).getBlockFaceShape(world, offset, side.getOpposite()) == BlockFaceShape.SOLID;
             state = state.withProperty(SIDE_OVERLAYS[i], useOverlay);
@@ -747,14 +723,14 @@ public abstract class BlockFluidBase extends Block implements IFluidBlock
                     if (otherDecay < quantaPerBlock)
                     {
                         int power = otherDecay - (decay - quantaPerBlock);
-                        vec = vec.add(side.getXOffset() * power, 0, side.getZOffset() * power);
+                        vec = vec.addVector(side.getFrontOffsetX() * power, 0, side.getFrontOffsetZ() * power);
                     }
                 }
             }
             else
             {
                 int power = otherDecay - decay;
-                vec = vec.add(side.getXOffset() * power, 0, side.getZOffset() * power);
+                vec = vec.addVector(side.getFrontOffsetX() * power, 0, side.getFrontOffsetZ() * power);
             }
         }
 
@@ -765,7 +741,7 @@ public abstract class BlockFluidBase extends Block implements IFluidBlock
                 BlockPos offset = pos.offset(side);
                 if (causesDownwardCurrent(world, offset, side) || causesDownwardCurrent(world, offset.down(densityDir), side))
                 {
-                    vec = vec.normalize().add(0.0, 6.0 * densityDir, 0.0);
+                    vec = vec.normalize().addVector(0.0, 6.0 * densityDir, 0.0);
                     break;
                 }
             }
@@ -776,16 +752,11 @@ public abstract class BlockFluidBase extends Block implements IFluidBlock
 
     private int getFlowDecay(IBlockAccess world, BlockPos pos)
     {
-        return quantaPerBlock - getEffectiveQuanta(world, pos);
-    }
-
-    final int getEffectiveQuanta(IBlockAccess world, BlockPos pos)
-    {
         int quantaValue = getQuantaValue(world, pos);
-        return quantaValue > 0 && quantaValue < quantaPerBlock && hasVerticalFlow(world, pos) ? quantaPerBlock : quantaValue;
+        return quantaValue > 0 && hasVerticalFlow(world, pos) ? 0 : quantaPerBlock - quantaValue;
     }
 
-    final boolean hasVerticalFlow(IBlockAccess world, BlockPos pos)
+    private boolean hasVerticalFlow(IBlockAccess world, BlockPos pos)
     {
         return world.getBlockState(pos.down(densityDir)).getBlock() == this;
     }
@@ -818,15 +789,11 @@ public abstract class BlockFluidBase extends Block implements IFluidBlock
 
     public float getFilledPercentage(IBlockAccess world, BlockPos pos)
     {
-        int quantaRemaining = getEffectiveQuanta(world, pos);
+        int quantaRemaining = getQuantaValue(world, pos);
         float remaining = (quantaRemaining + 1f) / (quantaPerBlockFloat + 1f);
         return remaining * (density > 0 ? 1 : -1);
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#getCollisionBoundingBox(IBlockAccess,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
-     */
     @Override
     public AxisAlignedBB getCollisionBoundingBox(@Nonnull IBlockState blockState, @Nonnull IBlockAccess worldIn, @Nonnull BlockPos pos)
     {
@@ -872,12 +839,5 @@ public abstract class BlockFluidBase extends Block implements IFluidBlock
         float filled = getFilledPercentage(world, pos);
         return filled < 0 ? vec.y > pos.getY() + filled + 1
                           : vec.y < pos.getY() + filled;
-    }
-    
-    @Override
-    public float getBlockLiquidHeight(World world, BlockPos pos, IBlockState state, Material material)
-    {
-        float filled = getFilledPercentage(world, pos);
-        return Math.max(filled, 0);
     }
 }

@@ -221,9 +221,9 @@ public class VanillaInventoryCodeHooks
     @Nullable
     private static Pair<IItemHandler, Object> getItemHandler(IHopper hopper, EnumFacing hopperFacing)
     {
-        double x = hopper.getXPos() + (double) hopperFacing.getXOffset();
-        double y = hopper.getYPos() + (double) hopperFacing.getYOffset();
-        double z = hopper.getZPos() + (double) hopperFacing.getZOffset();
+        double x = hopper.getXPos() + (double) hopperFacing.getFrontOffsetX();
+        double y = hopper.getYPos() + (double) hopperFacing.getFrontOffsetY();
+        double z = hopper.getZPos() + (double) hopperFacing.getFrontOffsetZ();
         return getItemHandler(hopper.getWorld(), x, y, z, hopperFacing.getOpposite());
     }
 

@@ -37,10 +37,6 @@ public class BlockSapling extends BlockBush implements IGrowable
         this.setCreativeTab(CreativeTabs.DECORATIONS);
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#getBoundingBox(IBlockAccess,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
-     */
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
         return SAPLING_AABB;
@@ -51,7 +47,7 @@ public class BlockSapling extends BlockBush implements IGrowable
      */
     public String getLocalizedName()
     {
-        return I18n.translateToLocal(this.getTranslationKey() + "." + BlockPlanks.EnumType.OAK.getTranslationKey() + ".name");
+        return I18n.translateToLocal(this.getUnlocalizedName() + "." + BlockPlanks.EnumType.OAK.getUnlocalizedName() + ".name");
     }
 
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)

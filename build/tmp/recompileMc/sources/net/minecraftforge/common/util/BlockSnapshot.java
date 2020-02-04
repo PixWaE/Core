@@ -184,13 +184,11 @@ public class BlockSnapshot
         IBlockState current = getCurrentBlock();
         IBlockState replaced = getReplacedBlock();
 
-        int flags = notifyNeighbors ? Constants.BlockFlags.DEFAULT : Constants.BlockFlags.SEND_TO_CLIENTS;
-
         if (current.getBlock() != replaced.getBlock() || current.getBlock().getMetaFromState(current) != replaced.getBlock().getMetaFromState(replaced))
         {
             if (force)
             {
-                world.setBlockState(pos, replaced, flags);
+                world.setBlockState(pos, replaced, notifyNeighbors ? 3 : 2);
             }
             else
             {
@@ -198,8 +196,8 @@ public class BlockSnapshot
             }
         }
 
-        world.setBlockState(pos, replaced, flags);
-        world.notifyBlockUpdate(pos, current, replaced, flags);
+        world.setBlockState(pos, replaced, notifyNeighbors ? 3 : 2);
+        world.notifyBlockUpdate(pos, current, replaced, notifyNeighbors ? 3 : 2);
 
         TileEntity te = null;
         if (getNbt() != null)
@@ -221,8 +219,8 @@ public class BlockSnapshot
 
     public void writeToNBT(NBTTagCompound compound)
     {
-        compound.setString("blockMod", getRegistryName().getNamespace());
-        compound.setString("blockName", getRegistryName().getPath());
+        compound.setString("blockMod", getRegistryName().getResourceDomain());
+        compound.setString("blockName", getRegistryName().getResourcePath());
         compound.setInteger("posX", getPos().getX());
         compound.setInteger("posY", getPos().getY());
         compound.setInteger("posZ", getPos().getZ());

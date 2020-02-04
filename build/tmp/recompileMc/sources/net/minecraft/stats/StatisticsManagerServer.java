@@ -25,14 +25,14 @@ import org.apache.logging.log4j.Logger;
 public class StatisticsManagerServer extends StatisticsManager
 {
     private static final Logger LOGGER = LogManager.getLogger();
-    private final MinecraftServer server;
+    private final MinecraftServer mcServer;
     private final File statsFile;
     private final Set<StatBase> dirty = Sets.<StatBase>newHashSet();
     private int lastStatRequest = -300;
 
     public StatisticsManagerServer(MinecraftServer serverIn, File statsFileIn)
     {
-        this.server = serverIn;
+        this.mcServer = serverIn;
         this.statsFile = statsFileIn;
     }
 
@@ -184,7 +184,7 @@ public class StatisticsManagerServer extends StatisticsManager
 
     public void sendStats(EntityPlayerMP player)
     {
-        int i = this.server.getTickCounter();
+        int i = this.mcServer.getTickCounter();
         Map<StatBase, Integer> map = Maps.<StatBase, Integer>newHashMap();
 
         if (i - this.lastStatRequest > 300)

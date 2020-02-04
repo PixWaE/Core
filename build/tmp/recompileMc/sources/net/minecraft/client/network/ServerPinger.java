@@ -295,7 +295,7 @@ public class ServerPinger
                 else
                 {
                     iterator.remove();
-                    networkmanager.handleDisconnection();
+                    networkmanager.checkDisconnected();
                 }
             }
         }

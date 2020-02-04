@@ -75,17 +75,7 @@ public class EntityShulker extends EntityGolem implements IMob
 
     /**
      * Called only once on an entity when first time spawned, via egg, mob spawner, natural spawning etc, but not called
-     * when entity is reloaded from nbt. Mainly used for initializing attributes and inventory.
-     *  
-     * The livingdata parameter is used to pass data between all instances during a pack spawn. It will be null on the
-     * first call. Subclasses may check if it's null, and then create a new one and return it if so, initializing all
-     * entities in the pack with the contained data.
-     *  
-     * @return The IEntityLivingData to pass to this method for other instances of this entity class within the same
-     * pack
-     *  
-     * @param difficulty The current local difficulty
-     * @param livingdata Shared spawn data. Will usually be null. (See return value for more information)
+     * when entity is reloaded from nbt. Mainly used for initializing attributes and inventory
      */
     @Nullable
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
@@ -181,7 +171,7 @@ public class EntityShulker extends EntityGolem implements IMob
     public void readEntityFromNBT(NBTTagCompound compound)
     {
         super.readEntityFromNBT(compound);
-        this.dataManager.set(ATTACHED_FACE, EnumFacing.byIndex(compound.getByte("AttachFace")));
+        this.dataManager.set(ATTACHED_FACE, EnumFacing.getFront(compound.getByte("AttachFace")));
         this.dataManager.set(PEEK_TICK, Byte.valueOf(compound.getByte("Peek")));
         this.dataManager.set(COLOR, Byte.valueOf(compound.getByte("Color")));
 
@@ -535,7 +525,7 @@ public class EntityShulker extends EntityGolem implements IMob
     }
 
     /**
-     * Sets a target for the client to interpolate towards over the next few ticks
+     * Set the position and rotation values directly without any clamping.
      */
     @SideOnly(Side.CLIENT)
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport)

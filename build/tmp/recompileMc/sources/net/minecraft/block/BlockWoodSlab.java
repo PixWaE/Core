@@ -36,8 +36,6 @@ public abstract class BlockWoodSlab extends BlockSlab
 
     /**
      * Get the MapColor for this Block and the given BlockState
-     * @deprecated call via {@link IBlockState#getMapColor(IBlockAccess,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
      */
     public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
@@ -60,9 +58,9 @@ public abstract class BlockWoodSlab extends BlockSlab
     /**
      * Returns the slab block name with the type associated with it
      */
-    public String getTranslationKey(int meta)
+    public String getUnlocalizedName(int meta)
     {
-        return super.getTranslationKey() + "." + BlockPlanks.EnumType.byMetadata(meta).getTranslationKey();
+        return super.getUnlocalizedName() + "." + BlockPlanks.EnumType.byMetadata(meta).getUnlocalizedName();
     }
 
     public IProperty<?> getVariantProperty()

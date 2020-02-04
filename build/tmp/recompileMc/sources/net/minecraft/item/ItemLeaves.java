@@ -27,8 +27,8 @@ public class ItemLeaves extends ItemBlock
      * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have
      * different names based on their damage or NBT.
      */
-    public String getTranslationKey(ItemStack stack)
+    public String getUnlocalizedName(ItemStack stack)
     {
-        return super.getTranslationKey() + "." + this.leaves.getWoodType(stack.getMetadata()).getTranslationKey();
+        return super.getUnlocalizedName() + "." + this.leaves.getWoodType(stack.getMetadata()).getUnlocalizedName();
     }
 }

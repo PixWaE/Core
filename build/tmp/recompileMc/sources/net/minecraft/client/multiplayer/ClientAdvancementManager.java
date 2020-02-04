@@ -35,18 +35,18 @@ public class ClientAdvancementManager
         this.mc = p_i47380_1_;
     }
 
-    public void read(SPacketAdvancementInfo packetIn)
+    public void read(SPacketAdvancementInfo p_192799_1_)
     {
-        if (packetIn.isFirstSync())
+        if (p_192799_1_.isFirstSync())
         {
             this.advancementList.clear();
             this.advancementToProgress.clear();
         }
 
-        this.advancementList.removeAll(packetIn.getAdvancementsToRemove());
-        this.advancementList.loadAdvancements(packetIn.getAdvancementsToAdd());
+        this.advancementList.removeAll(p_192799_1_.getAdvancementsToRemove());
+        this.advancementList.loadAdvancements(p_192799_1_.getAdvancementsToAdd());
 
-        for (Entry<ResourceLocation, AdvancementProgress> entry : packetIn.getProgressUpdates().entrySet())
+        for (Entry<ResourceLocation, AdvancementProgress> entry : p_192799_1_.getProgressUpdates().entrySet())
         {
             Advancement advancement = this.advancementList.getAdvancement(entry.getKey());
 
@@ -61,7 +61,7 @@ public class ClientAdvancementManager
                     this.listener.onUpdateAdvancementProgress(advancement, advancementprogress);
                 }
 
-                if (!packetIn.isFirstSync() && advancementprogress.isDone() && advancement.getDisplay() != null && advancement.getDisplay().shouldShowToast())
+                if (!p_192799_1_.isFirstSync() && advancementprogress.isDone() && advancement.getDisplay() != null && advancement.getDisplay().shouldShowToast())
                 {
                     this.mc.getToastGui().add(new AdvancementToast(advancement));
                 }
@@ -78,47 +78,47 @@ public class ClientAdvancementManager
         return this.advancementList;
     }
 
-    public void setSelectedTab(@Nullable Advancement advancementIn, boolean tellServer)
+    public void setSelectedTab(@Nullable Advancement p_194230_1_, boolean tellServer)
     {
         NetHandlerPlayClient nethandlerplayclient = this.mc.getConnection();
 
-        if (nethandlerplayclient != null && advancementIn != null && tellServer)
+        if (nethandlerplayclient != null && p_194230_1_ != null && tellServer)
         {
-            nethandlerplayclient.sendPacket(CPacketSeenAdvancements.openedTab(advancementIn));
+            nethandlerplayclient.sendPacket(CPacketSeenAdvancements.openedTab(p_194230_1_));
         }
 
-        if (this.selectedTab != advancementIn)
+        if (this.selectedTab != p_194230_1_)
         {
-            this.selectedTab = advancementIn;
+            this.selectedTab = p_194230_1_;
 
             if (this.listener != null)
             {
-                this.listener.setSelectedTab(advancementIn);
+                this.listener.setSelectedTab(p_194230_1_);
             }
         }
     }
 
-    public void setListener(@Nullable ClientAdvancementManager.IListener listenerIn)
+    public void setListener(@Nullable ClientAdvancementManager.IListener p_192798_1_)
     {
-        this.listener = listenerIn;
-        this.advancementList.setListener(listenerIn);
+        this.listener = p_192798_1_;
+        this.advancementList.setListener(p_192798_1_);
 
-        if (listenerIn != null)
+        if (p_192798_1_ != null)
         {
             for (Entry<Advancement, AdvancementProgress> entry : this.advancementToProgress.entrySet())
             {
-                listenerIn.onUpdateAdvancementProgress(entry.getKey(), entry.getValue());
+                p_192798_1_.onUpdateAdvancementProgress(entry.getKey(), entry.getValue());
             }
 
-            listenerIn.setSelectedTab(this.selectedTab);
+            p_192798_1_.setSelectedTab(this.selectedTab);
         }
     }
 
     @SideOnly(Side.CLIENT)
     public interface IListener extends AdvancementList.Listener
     {
-        void onUpdateAdvancementProgress(Advancement advancementIn, AdvancementProgress progress);
+        void onUpdateAdvancementProgress(Advancement p_191933_1_, AdvancementProgress p_191933_2_);
 
-        void setSelectedTab(@Nullable Advancement advancementIn);
+        void setSelectedTab(@Nullable Advancement p_193982_1_);
     }
 }

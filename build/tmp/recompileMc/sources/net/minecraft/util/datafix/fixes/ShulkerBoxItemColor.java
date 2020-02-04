@@ -22,7 +22,7 @@ public class ShulkerBoxItemColor implements IFixableData
             {
                 NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("BlockEntityTag");
 
-                if (nbttagcompound1.getTagList("Items", 10).isEmpty())
+                if (nbttagcompound1.getTagList("Items", 10).hasNoTags())
                 {
                     nbttagcompound1.removeTag("Items");
                 }
@@ -30,12 +30,12 @@ public class ShulkerBoxItemColor implements IFixableData
                 int i = nbttagcompound1.getInteger("Color");
                 nbttagcompound1.removeTag("Color");
 
-                if (nbttagcompound1.isEmpty())
+                if (nbttagcompound1.hasNoTags())
                 {
                     nbttagcompound.removeTag("BlockEntityTag");
                 }
 
-                if (nbttagcompound.isEmpty())
+                if (nbttagcompound.hasNoTags())
                 {
                     compound.removeTag("tag");
                 }

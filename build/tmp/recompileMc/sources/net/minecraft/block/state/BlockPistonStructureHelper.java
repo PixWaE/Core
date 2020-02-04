@@ -47,7 +47,7 @@ public class BlockPistonStructureHelper
 
         if (!BlockPistonBase.canPush(iblockstate, this.world, this.blockToMove, this.moveDirection, false, this.moveDirection))
         {
-            if (iblockstate.getPushReaction() == EnumPushReaction.DESTROY)
+            if (iblockstate.getMobilityFlag() == EnumPushReaction.DESTROY)
             {
                 this.toDestroy.add(this.blockToMove);
                 return true;
@@ -171,7 +171,7 @@ public class BlockPistonStructureHelper
                         return false;
                     }
 
-                    if (iblockstate.getPushReaction() == EnumPushReaction.DESTROY)
+                    if (iblockstate.getMobilityFlag() == EnumPushReaction.DESTROY)
                     {
                         this.toDestroy.add(blockpos1);
                         return true;

@@ -230,7 +230,7 @@ public class GameRegistry
     public static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String key)
     {
         // As return is ignored for compatibility, always check namespace
-        GameData.checkPrefix(new ResourceLocation(key).toString(), true);
+        GameData.checkPrefix(new ResourceLocation(key).toString());
         TileEntity.register(key, tileEntityClass);
     }
 

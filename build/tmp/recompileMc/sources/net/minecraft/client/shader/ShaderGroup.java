@@ -111,7 +111,7 @@ public class ShaderGroup
         catch (Exception exception2)
         {
             JsonException jsonexception = JsonException.forException(exception2);
-            jsonexception.setFilenameAndFlush(p_152765_2_.getPath());
+            jsonexception.setFilenameAndFlush(p_152765_2_.getResourcePath());
             throw jsonexception;
         }
         finally

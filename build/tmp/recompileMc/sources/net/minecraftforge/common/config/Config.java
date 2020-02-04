@@ -116,12 +116,4 @@ public @interface Config
     @Target({ElementType.FIELD, ElementType.TYPE})
     @interface RequiresWorldRestart
     {}
-
-    /**
-     * A field marked with this annotation (and {@link RangeInt} or {@link RangeDouble}) will have a slider control attached in the config UI
-     */
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.FIELD)
-    @interface SlidingOption
-    {}
 }

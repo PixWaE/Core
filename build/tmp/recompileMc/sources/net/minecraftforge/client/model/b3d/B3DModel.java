@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector2f;
@@ -44,7 +45,6 @@ import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import net.minecraftforge.common.ForgeVersion;
-import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -681,21 +681,25 @@ public class B3DModel
                 else t.setIdentity();
             }
 
-            TRSRTransformation trsr = new TRSRTransformation(t);
-
             // pos
-            Vector4f pos = new Vector4f(this.pos);
+            Vector4f pos = new Vector4f(this.pos), newPos = new Vector4f();
             pos.w = 1;
-            trsr.transformPosition(pos);
-            Vector3f rPos = new Vector3f(pos.x / pos.w, pos.y / pos.w, pos.z / pos.w);
+            t.transform(pos, newPos);
+            Vector3f rPos = new Vector3f(newPos.x / newPos.w, newPos.y / newPos.w, newPos.z / newPos.w);
 
             // normal
             Vector3f rNormal = null;
 
             if(this.normal != null)
             {
-                rNormal = new Vector3f(this.normal);
-                trsr.transformNormal(rNormal);
+                Matrix3f tm = new Matrix3f();
+                t.getRotationScale(tm);
+                tm.invert();
+                tm.transpose();
+                Vector3f normal = new Vector3f(this.normal);
+                rNormal = new Vector3f();
+                tm.transform(normal, rNormal);
+                rNormal.normalize();
             }
 
             // texCoords TODO

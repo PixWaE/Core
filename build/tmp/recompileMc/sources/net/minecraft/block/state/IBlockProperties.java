@@ -84,7 +84,7 @@ public interface IBlockProperties
 
     int getStrongPower(IBlockAccess blockAccess, BlockPos pos, EnumFacing side);
 
-    EnumPushReaction getPushReaction();
+    EnumPushReaction getMobilityFlag();
 
     IBlockState getActualState(IBlockAccess blockAccess, BlockPos pos);
 

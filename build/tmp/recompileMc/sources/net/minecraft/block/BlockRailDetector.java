@@ -51,7 +51,6 @@ public class BlockRailDetector extends BlockRailBase
 
     /**
      * Can this block provide power. Only wire currently seems to have this change based on its state.
-     * @deprecated call via {@link IBlockState#canProvidePower()} whenever possible. Implementing/overriding is fine.
      */
     public boolean canProvidePower(IBlockState state)
     {
@@ -61,7 +60,7 @@ public class BlockRailDetector extends BlockRailBase
     /**
      * Called When an Entity Collided with the Block
      */
-    public void onEntityCollision(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
+    public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
     {
         if (!worldIn.isRemote)
         {
@@ -87,19 +86,11 @@ public class BlockRailDetector extends BlockRailBase
         }
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#getWeakPower(IBlockAccess,BlockPos,EnumFacing)} whenever possible.
-     * Implementing/overriding is fine.
-     */
     public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side)
     {
         return ((Boolean)blockState.getValue(POWERED)).booleanValue() ? 15 : 0;
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#getStrongPower(IBlockAccess,BlockPos,EnumFacing)} whenever possible.
-     * Implementing/overriding is fine.
-     */
     public int getStrongPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side)
     {
         if (!((Boolean)blockState.getValue(POWERED)).booleanValue())
@@ -178,19 +169,11 @@ public class BlockRailDetector extends BlockRailBase
         return SHAPE;
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#hasComparatorInputOverride()} whenever possible. Implementing/overriding
-     * is fine.
-     */
     public boolean hasComparatorInputOverride(IBlockState state)
     {
         return true;
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#getComparatorInputOverride(World,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
-     */
     public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos)
     {
         if (((Boolean)blockState.getValue(POWERED)).booleanValue())
@@ -254,8 +237,6 @@ public class BlockRailDetector extends BlockRailBase
     /**
      * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed
      * blockstate.
-     * @deprecated call via {@link IBlockState#withRotation(Rotation)} whenever possible. Implementing/overriding is
-     * fine.
      */
     @SuppressWarnings("incomplete-switch")
     public IBlockState withRotation(IBlockState state, Rotation rot)
@@ -344,7 +325,6 @@ public class BlockRailDetector extends BlockRailBase
     /**
      * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed
      * blockstate.
-     * @deprecated call via {@link IBlockState#withMirror(Mirror)} whenever possible. Implementing/overriding is fine.
      */
     @SuppressWarnings("incomplete-switch")
     public IBlockState withMirror(IBlockState state, Mirror mirrorIn)

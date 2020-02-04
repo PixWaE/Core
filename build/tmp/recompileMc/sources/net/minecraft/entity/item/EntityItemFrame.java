@@ -260,7 +260,7 @@ public class EntityItemFrame extends EntityHanging
     {
         NBTTagCompound nbttagcompound = compound.getCompoundTag("Item");
 
-        if (nbttagcompound != null && !nbttagcompound.isEmpty())
+        if (nbttagcompound != null && !nbttagcompound.hasNoTags())
         {
             this.setDisplayedItemWithUpdate(new ItemStack(nbttagcompound), false);
             this.setRotation(compound.getByte("ItemRotation"), false);

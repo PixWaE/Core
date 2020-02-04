@@ -762,7 +762,6 @@ public class GameSettings
      */
     public void loadOptions()
     {
-        FileInputStream fileInputStream = null; // Forge: fix MC-151173
         try
         {
             if (!this.optionsFile.exists())
@@ -771,7 +770,7 @@ public class GameSettings
             }
 
             this.soundLevels.clear();
-            List<String> list = IOUtils.readLines(fileInputStream = new FileInputStream(this.optionsFile), StandardCharsets.UTF_8); // Forge: fix MC-117449, MC-151173
+            List<String> list = IOUtils.readLines(new FileInputStream(this.optionsFile));
             NBTTagCompound nbttagcompound = new NBTTagCompound();
 
             for (String s : list)
@@ -857,7 +856,7 @@ public class GameSettings
 
                     if ("difficulty".equals(s1))
                     {
-                        this.difficulty = EnumDifficulty.byId(Integer.parseInt(s2));
+                        this.difficulty = EnumDifficulty.getDifficultyEnum(Integer.parseInt(s2));
                     }
 
                     if ("fancyGraphics".equals(s1))
@@ -1144,7 +1143,6 @@ public class GameSettings
         {
             LOGGER.error("Failed to load options", (Throwable)exception);
         }
-        finally { IOUtils.closeQuietly(fileInputStream); } // Forge: fix MC-151173
     }
 
     private NBTTagCompound dataFix(NBTTagCompound p_189988_1_)
@@ -1202,7 +1200,7 @@ public class GameSettings
             printwriter.println("anaglyph3d:" + this.anaglyph);
             printwriter.println("maxFps:" + this.limitFramerate);
             printwriter.println("fboEnable:" + this.fboEnable);
-            printwriter.println("difficulty:" + this.difficulty.getId());
+            printwriter.println("difficulty:" + this.difficulty.getDifficultyId());
             printwriter.println("fancyGraphics:" + this.fancyGraphics);
             printwriter.println("ao:" + this.ambientOcclusion);
 

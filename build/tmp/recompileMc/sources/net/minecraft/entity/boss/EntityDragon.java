@@ -580,11 +580,11 @@ public class EntityDragon extends EntityLiving implements IEntityMultiPart, IMob
         return flag;
     }
 
-    public boolean attackEntityFromPart(MultiPartEntityPart part, DamageSource source, float damage)
+    public boolean attackEntityFromPart(MultiPartEntityPart dragonPart, DamageSource source, float damage)
     {
-        damage = this.phaseManager.getCurrentPhase().getAdjustedDamage(part, source, damage);
+        damage = this.phaseManager.getCurrentPhase().getAdjustedDamage(dragonPart, source, damage);
 
-        if (part != this.dragonPartHead)
+        if (dragonPart != this.dragonPartHead)
         {
             damage = damage / 4.0F + Math.min(damage, 1.0F);
         }
@@ -1004,10 +1004,7 @@ public class EntityDragon extends EntityLiving implements IEntityMultiPart, IMob
     }
 
     /**
-     * Return all subparts of this entity. These parts are not saved in the chunk and do not tick, but are detected by
-     * getEntitiesInAABB and are put in the entity ID map. Vanilla makes the assumption that the entities in this array
-     * have consecutive entity ID's after their owner ID, so you must construct all parts in the constructor of the
-     * parent.
+     * Return the Entity parts making up this Entity (currently only for dragons)
      */
     public Entity[] getParts()
     {

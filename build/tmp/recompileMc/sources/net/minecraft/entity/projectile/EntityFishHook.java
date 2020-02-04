@@ -138,7 +138,7 @@ public class EntityFishHook extends Entity
     }
 
     /**
-     * Sets a target for the client to interpolate towards over the next few ticks
+     * Set the position and rotation values directly without any clamping.
      */
     @SideOnly(Side.CLIENT)
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport)

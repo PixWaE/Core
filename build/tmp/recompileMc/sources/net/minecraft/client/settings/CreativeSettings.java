@@ -71,8 +71,8 @@ public class CreativeSettings
         }
     }
 
-    public HotbarSnapshot getHotbarSnapshot(int index)
+    public HotbarSnapshot getHotbarSnapshot(int p_192563_1_)
     {
-        return this.hotbarSnapshots[index];
+        return this.hotbarSnapshots[p_192563_1_];
     }
 }

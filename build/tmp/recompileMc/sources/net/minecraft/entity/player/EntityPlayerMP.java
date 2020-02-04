@@ -121,7 +121,7 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
     /** The NetServerHandler assigned to this player by the ServerConfigurationManager. */
     public NetHandlerPlayServer connection;
     /** Reference to the MinecraftServer object. */
-    public final MinecraftServer server;
+    public final MinecraftServer mcServer;
     /** The player interaction manager for this player */
     public final PlayerInteractionManager interactionManager;
     /** player X position as seen by PlayerManager */
@@ -201,7 +201,7 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
             blockpos = worldIn.getTopSolidOrLiquidBlock(blockpos.add(this.rand.nextInt(i * 2 + 1) - i, 0, this.rand.nextInt(i * 2 + 1) - i));
         }
 
-        this.server = server;
+        this.mcServer = server;
         this.statsFile = server.getPlayerList().getPlayerStatsFile(this);
         this.advancements = server.getPlayerList().getPlayerAdvancements(this);
         this.stepHeight = 1.0F;
@@ -393,7 +393,7 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
             if (entity.isEntityAlive())
             {
                 this.setPositionAndRotation(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
-                this.server.getPlayerList().serverUpdateMovingPlayer(this);
+                this.mcServer.getPlayerList().serverUpdateMovingPlayer(this);
 
                 if (this.isSneaking())
                 {
@@ -527,16 +527,16 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
             {
                 if (team.getDeathMessageVisibility() == Team.EnumVisible.HIDE_FOR_OTHER_TEAMS)
                 {
-                    this.server.getPlayerList().sendMessageToAllTeamMembers(this, this.getCombatTracker().getDeathMessage());
+                    this.mcServer.getPlayerList().sendMessageToAllTeamMembers(this, this.getCombatTracker().getDeathMessage());
                 }
                 else if (team.getDeathMessageVisibility() == Team.EnumVisible.HIDE_FOR_OWN_TEAM)
                 {
-                    this.server.getPlayerList().sendMessageToTeamOrAllPlayers(this, this.getCombatTracker().getDeathMessage());
+                    this.mcServer.getPlayerList().sendMessageToTeamOrAllPlayers(this, this.getCombatTracker().getDeathMessage());
                 }
             }
             else
             {
-                this.server.getPlayerList().sendMessage(this.getCombatTracker().getDeathMessage());
+                this.mcServer.getPlayerList().sendMessage(this.getCombatTracker().getDeathMessage());
             }
         }
 
@@ -661,7 +661,7 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
         }
         else
         {
-            boolean flag = this.server.isDedicatedServer() && this.canPlayersAttack() && "fall".equals(source.damageType);
+            boolean flag = this.mcServer.isDedicatedServer() && this.canPlayersAttack() && "fall".equals(source.damageType);
 
             if (!flag && this.respawnInvulnerabilityTicks > 0 && source != DamageSource.OUT_OF_WORLD)
             {
@@ -704,7 +704,7 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
      */
     private boolean canPlayersAttack()
     {
-        return this.server.isPVPEnabled();
+        return this.mcServer.isPVPEnabled();
     }
 
     @Nullable
@@ -742,7 +742,7 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
                 dimensionIn = 1;
             }
 
-            this.server.getPlayerList().transferPlayerToDimension(this, dimensionIn, teleporter);
+            this.mcServer.getPlayerList().transferPlayerToDimension(this, dimensionIn, teleporter);
             this.connection.sendPacket(new SPacketEffect(1032, BlockPos.ORIGIN, 0, false));
             this.lastExperience = -1;
             this.lastHealth = -1.0F;
@@ -1403,15 +1403,15 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
      */
     public boolean canUseCommand(int permLevel, String commandName)
     {
-        if ("seed".equals(commandName) && !this.server.isDedicatedServer())
+        if ("seed".equals(commandName) && !this.mcServer.isDedicatedServer())
         {
             return true;
         }
         else if (!"tell".equals(commandName) && !"help".equals(commandName) && !"me".equals(commandName) && !"trigger".equals(commandName))
         {
-            if (this.server.getPlayerList().canSendCommands(this.getGameProfile()))
+            if (this.mcServer.getPlayerList().canSendCommands(this.getGameProfile()))
             {
-                UserListOpsEntry userlistopsentry = (UserListOpsEntry)this.server.getPlayerList().getOppedPlayers().getEntry(this.getGameProfile());
+                UserListOpsEntry userlistopsentry = (UserListOpsEntry)this.mcServer.getPlayerList().getOppedPlayers().getEntry(this.getGameProfile());
 
                 if (userlistopsentry != null)
                 {
@@ -1419,7 +1419,7 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
                 }
                 else
                 {
-                    return this.server.getOpPermissionLevel() >= permLevel;
+                    return this.mcServer.getOpPermissionLevel() >= permLevel;
                 }
             }
             else

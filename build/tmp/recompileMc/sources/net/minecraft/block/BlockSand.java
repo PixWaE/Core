@@ -45,8 +45,6 @@ public class BlockSand extends BlockFalling
 
     /**
      * Get the MapColor for this Block and the given BlockState
-     * @deprecated call via {@link IBlockState#getMapColor(IBlockAccess,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
      */
     public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
@@ -90,7 +88,7 @@ public class BlockSand extends BlockFalling
         private final int meta;
         private final String name;
         private final MapColor mapColor;
-        private final String translationKey;
+        private final String unlocalizedName;
         private final int dustColor;
 
         private EnumType(int p_i47157_3_, String p_i47157_4_, String p_i47157_5_, MapColor p_i47157_6_, int p_i47157_7_)
@@ -98,7 +96,7 @@ public class BlockSand extends BlockFalling
             this.meta = p_i47157_3_;
             this.name = p_i47157_4_;
             this.mapColor = p_i47157_6_;
-            this.translationKey = p_i47157_5_;
+            this.unlocalizedName = p_i47157_5_;
             this.dustColor = p_i47157_7_;
         }
 
@@ -138,9 +136,9 @@ public class BlockSand extends BlockFalling
             return this.name;
         }
 
-        public String getTranslationKey()
+        public String getUnlocalizedName()
         {
-            return this.translationKey;
+            return this.unlocalizedName;
         }
 
         static

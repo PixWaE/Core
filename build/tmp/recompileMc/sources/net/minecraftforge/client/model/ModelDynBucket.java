@@ -176,7 +176,7 @@ public final class ModelDynBucket implements IModel
             }
         }
 
-        return new BakedDynBucket(this, builder.build(), particleSprite, format, Maps.immutableEnumMap(transformMap), Maps.newHashMap(), transform.isIdentity());
+        return new BakedDynBucket(this, builder.build(), particleSprite, format, Maps.immutableEnumMap(transformMap), Maps.newHashMap());
     }
 
     /**
@@ -255,7 +255,7 @@ public final class ModelDynBucket implements IModel
         @Override
         public boolean accepts(ResourceLocation modelLocation)
         {
-            return modelLocation.getNamespace().equals(ForgeVersion.MOD_ID) && modelLocation.getPath().contains("forgebucket");
+            return modelLocation.getResourceDomain().equals(ForgeVersion.MOD_ID) && modelLocation.getResourcePath().contains("forgebucket");
         }
 
         @Override
@@ -273,26 +273,19 @@ public final class ModelDynBucket implements IModel
         public void register(TextureMap map)
         {
             // only create these textures if they are not added by a resource pack
-            try (IResource cover = getResource(new ResourceLocation(ForgeVersion.MOD_ID, "textures/items/bucket_cover.png"));
-                 IResource base = getResource(new ResourceLocation(ForgeVersion.MOD_ID, "textures/items/bucket_base.png")))
-            {
-                if (cover == null)
-                {
-                    ResourceLocation bucketCover = new ResourceLocation(ForgeVersion.MOD_ID, "items/bucket_cover");
-                    BucketCoverSprite bucketCoverSprite = new BucketCoverSprite(bucketCover);
-                    map.setTextureEntry(bucketCoverSprite);
-                }
 
-                if (base == null)
-                {
-                    ResourceLocation bucketBase = new ResourceLocation(ForgeVersion.MOD_ID, "items/bucket_base");
-                    BucketBaseSprite bucketBaseSprite = new BucketBaseSprite(bucketBase);
-                    map.setTextureEntry(bucketBaseSprite);
-                }
-            }
-            catch (IOException e)
+            if (getResource(new ResourceLocation(ForgeVersion.MOD_ID, "textures/items/bucket_cover.png")) == null)
             {
-                FMLLog.log.error("Failed to close resource", e);
+                ResourceLocation bucketCover = new ResourceLocation(ForgeVersion.MOD_ID, "items/bucket_cover");
+                BucketCoverSprite bucketCoverSprite = new BucketCoverSprite(bucketCover);
+                map.setTextureEntry(bucketCoverSprite);
+            }
+
+            if (getResource(new ResourceLocation(ForgeVersion.MOD_ID, "textures/items/bucket_base.png")) == null)
+            {
+                ResourceLocation bucketBase = new ResourceLocation(ForgeVersion.MOD_ID, "items/bucket_base");
+                BucketBaseSprite bucketBaseSprite = new BucketBaseSprite(bucketBase);
+                map.setTextureEntry(bucketBaseSprite);
             }
         }
 
@@ -460,15 +453,14 @@ public final class ModelDynBucket implements IModel
         private final Map<String, IBakedModel> cache; // contains all the baked models since they'll never change
         private final VertexFormat format;
 
-        BakedDynBucket(ModelDynBucket parent,
-                       ImmutableList<BakedQuad> quads,
-                       TextureAtlasSprite particle,
-                       VertexFormat format,
-                       ImmutableMap<TransformType, TRSRTransformation> transforms,
-                       Map<String, IBakedModel> cache,
-                       boolean untransformed)
+        public BakedDynBucket(ModelDynBucket parent,
+                              ImmutableList<BakedQuad> quads,
+                              TextureAtlasSprite particle,
+                              VertexFormat format,
+                              ImmutableMap<TransformType, TRSRTransformation> transforms,
+                              Map<String, IBakedModel> cache)
         {
-            super(quads, particle, transforms, BakedDynBucketOverrideHandler.INSTANCE, untransformed);
+            super(quads, particle, transforms, BakedDynBucketOverrideHandler.INSTANCE);
             this.format = format;
             this.parent = parent;
             this.cache = cache;

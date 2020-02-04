@@ -85,10 +85,6 @@ public class ShapedOreRecipe extends IForgeRegistryEntry.Impl<IRecipe> implement
     @Nonnull
     public ItemStack getCraftingResult(@Nonnull InventoryCrafting var1){ return output.copy(); }
 
-    /**
-     * Get the result of this recipe, usually for display purposes (e.g. recipe book). If your recipe has more than one
-     * possible result (e.g. it's dynamic and depends on its inputs), then return an empty stack.
-     */
     @Override
     @Nonnull
     public ItemStack getRecipeOutput(){ return output; }
@@ -190,9 +186,6 @@ public class ShapedOreRecipe extends IForgeRegistryEntry.Impl<IRecipe> implement
         return this.getHeight();
     }
 
-    /**
-     * Recipes with equal group are combined into one button in the recipe book
-     */
     @Override
     @Nonnull
     public String getGroup()

@@ -36,7 +36,7 @@ public class SPacketServerDifficulty implements Packet<INetHandlerPlayClient>
      */
     public void readPacketData(PacketBuffer buf) throws IOException
     {
-        this.difficulty = EnumDifficulty.byId(buf.readUnsignedByte());
+        this.difficulty = EnumDifficulty.getDifficultyEnum(buf.readUnsignedByte());
     }
 
     /**
@@ -44,7 +44,7 @@ public class SPacketServerDifficulty implements Packet<INetHandlerPlayClient>
      */
     public void writePacketData(PacketBuffer buf) throws IOException
     {
-        buf.writeByte(this.difficulty.getId());
+        buf.writeByte(this.difficulty.getDifficultyId());
     }
 
     @SideOnly(Side.CLIENT)

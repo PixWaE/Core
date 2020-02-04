@@ -109,10 +109,6 @@ public class TileEntityCommandBlock extends TileEntity
         this.setAuto(compound.getBoolean("auto"));
     }
 
-    /**
-     * Retrieves packet to send to the client whenever this Tile Entity is resynced via World.notifyBlockUpdate. For
-     * modded TE's, this packet comes back to you clientside in {@link #onDataPacket}
-     */
     @Nullable
     public SPacketUpdateTileEntity getUpdatePacket()
     {

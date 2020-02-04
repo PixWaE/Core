@@ -333,14 +333,14 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
 
                         for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL)
                         {
-                            j1 = Math.min(j1, this.world.getChunksLowestHorizon(l + enumfacing.getXOffset(), i1 + enumfacing.getZOffset()));
+                            j1 = Math.min(j1, this.world.getChunksLowestHorizon(l + enumfacing.getFrontOffsetX(), i1 + enumfacing.getFrontOffsetZ()));
                         }
 
                         this.checkSkylightNeighborHeight(l, i1, j1);
 
                         for (EnumFacing enumfacing1 : EnumFacing.Plane.HORIZONTAL)
                         {
-                            this.checkSkylightNeighborHeight(l + enumfacing1.getXOffset(), i1 + enumfacing1.getZOffset(), k);
+                            this.checkSkylightNeighborHeight(l + enumfacing1.getFrontOffsetX(), i1 + enumfacing1.getFrontOffsetZ(), k);
                         }
 
                         if (onlyOne)
@@ -489,7 +489,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
             {
                 for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL)
                 {
-                    this.updateSkylightNeighborHeight(k + enumfacing.getXOffset(), l + enumfacing.getZOffset(), j2, k2);
+                    this.updateSkylightNeighborHeight(k + enumfacing.getFrontOffsetX(), l + enumfacing.getFrontOffsetZ(), j2, k2);
                 }
 
                 this.updateSkylightNeighborHeight(k, l, j2, k2);
@@ -840,7 +840,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     }
 
     @Nullable
-    public TileEntity getTileEntity(BlockPos pos, Chunk.EnumCreateEntityType creationMode)
+    public TileEntity getTileEntity(BlockPos pos, Chunk.EnumCreateEntityType p_177424_2_)
     {
         TileEntity tileentity = this.tileEntities.get(pos);
 
@@ -852,12 +852,12 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
 
         if (tileentity == null)
         {
-            if (creationMode == Chunk.EnumCreateEntityType.IMMEDIATE)
+            if (p_177424_2_ == Chunk.EnumCreateEntityType.IMMEDIATE)
             {
                 tileentity = this.createNewTileEntity(pos);
                 this.world.setTileEntity(pos, tileentity);
             }
-            else if (creationMode == Chunk.EnumCreateEntityType.QUEUED)
+            else if (p_177424_2_ == Chunk.EnumCreateEntityType.QUEUED)
             {
                 this.tileEntityPosQueue.add(pos.toImmutable());
             }
@@ -1301,12 +1301,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
 
         if (k == 255)
         {
-            // Forge: checking for client ensures that biomes are only generated on integrated server
-            // in singleplayer. Generating biomes on the client may corrupt the biome ID arrays on
-            // the server while they are being generated because IntCache can't be thread safe,
-            // so client and server may end up filling the same array.
-            // This is not necessary in 1.13 and newer versions.
-            Biome biome = world.isRemote ? Biomes.PLAINS : provider.getBiome(pos, Biomes.PLAINS);
+            Biome biome = provider.getBiome(pos, Biomes.PLAINS);
             k = Biome.getIdForBiome(biome);
             this.blockBiomeArray[j << 4 | i] = (byte)(k & 255);
         }
@@ -1423,7 +1418,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
                     for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL)
                     {
                         int k = enumfacing.getAxisDirection() == EnumFacing.AxisDirection.POSITIVE ? 16 : 1;
-                        this.world.getChunk(blockpos.offset(enumfacing, k)).checkLightSide(enumfacing.getOpposite());
+                        this.world.getChunkFromBlockCoords(blockpos.offset(enumfacing, k)).checkLightSide(enumfacing.getOpposite());
                     }
 
                     this.setSkylightUpdated();

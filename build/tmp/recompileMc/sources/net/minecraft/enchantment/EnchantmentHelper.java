@@ -106,7 +106,7 @@ public class EnchantmentHelper
             }
         }
 
-        if (nbttaglist.isEmpty())
+        if (nbttaglist.hasNoTags())
         {
             if (stack.hasTagCompound())
             {

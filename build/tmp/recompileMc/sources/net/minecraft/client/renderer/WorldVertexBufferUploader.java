@@ -15,7 +15,7 @@ public class WorldVertexBufferUploader
         if (bufferBuilderIn.getVertexCount() > 0)
         {
             VertexFormat vertexformat = bufferBuilderIn.getVertexFormat();
-            int i = vertexformat.getSize();
+            int i = vertexformat.getNextOffset();
             ByteBuffer bytebuffer = bufferBuilderIn.getByteBuffer();
             List<VertexFormatElement> list = vertexformat.getElements();
 

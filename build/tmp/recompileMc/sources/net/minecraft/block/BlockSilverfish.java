@@ -159,7 +159,7 @@ public class BlockSilverfish extends Block
         private static final BlockSilverfish.EnumType[] META_LOOKUP = new BlockSilverfish.EnumType[values().length];
         private final int meta;
         private final String name;
-        private final String translationKey;
+        private final String unlocalizedName;
 
         private EnumType(int meta, String name)
         {
@@ -170,7 +170,7 @@ public class BlockSilverfish extends Block
         {
             this.meta = meta;
             this.name = name;
-            this.translationKey = unlocalizedName;
+            this.unlocalizedName = unlocalizedName;
         }
 
         public int getMetadata()
@@ -198,9 +198,9 @@ public class BlockSilverfish extends Block
             return this.name;
         }
 
-        public String getTranslationKey()
+        public String getUnlocalizedName()
         {
-            return this.translationKey;
+            return this.unlocalizedName;
         }
 
         public abstract IBlockState getModelBlock();

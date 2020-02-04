@@ -51,8 +51,6 @@ public class BlockRail extends BlockRailBase
     /**
      * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed
      * blockstate.
-     * @deprecated call via {@link IBlockState#withRotation(Rotation)} whenever possible. Implementing/overriding is
-     * fine.
      */
     @SuppressWarnings("incomplete-switch")
     public IBlockState withRotation(IBlockState state, Rotation rot)
@@ -141,7 +139,6 @@ public class BlockRail extends BlockRailBase
     /**
      * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed
      * blockstate.
-     * @deprecated call via {@link IBlockState#withMirror(Mirror)} whenever possible. Implementing/overriding is fine.
      */
     @SuppressWarnings("incomplete-switch")
     public IBlockState withMirror(IBlockState state, Mirror mirrorIn)

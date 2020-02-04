@@ -155,7 +155,7 @@ public class DragonFightManager
 
         if (++this.ticksSinceLastPlayerScan >= 20)
         {
-            this.updatePlayers();
+            this.updateplayers();
             this.ticksSinceLastPlayerScan = 0;
         }
 
@@ -282,7 +282,7 @@ public class DragonFightManager
         {
             for (int j = -8; j <= 8; ++j)
             {
-                Chunk chunk = this.world.getChunk(i, j);
+                Chunk chunk = this.world.getChunkFromChunkCoords(i, j);
 
                 for (TileEntity tileentity : chunk.getTileEntityMap().values())
                 {
@@ -304,7 +304,7 @@ public class DragonFightManager
         {
             for (int j = -8; j <= 8; ++j)
             {
-                Chunk chunk = this.world.getChunk(i, j);
+                Chunk chunk = this.world.getChunkFromChunkCoords(i, j);
 
                 for (TileEntity tileentity : chunk.getTileEntityMap().values())
                 {
@@ -354,12 +354,12 @@ public class DragonFightManager
         {
             for (int j = -8; j <= 8; ++j)
             {
-                this.world.getChunk(i, j);
+                this.world.getChunkFromChunkCoords(i, j);
             }
         }
     }
 
-    private void updatePlayers()
+    private void updateplayers()
     {
         Set<EntityPlayerMP> set = Sets.<EntityPlayerMP>newHashSet();
 
@@ -444,7 +444,7 @@ public class DragonFightManager
 
     private EntityDragon createNewDragon()
     {
-        this.world.getChunk(new BlockPos(0, 128, 0));
+        this.world.getChunkFromBlockCoords(new BlockPos(0, 128, 0));
         EntityDragon entitydragon = new EntityDragon(this.world);
         entitydragon.getPhaseManager().setPhase(PhaseList.HOLDING_PATTERN);
         entitydragon.setLocationAndAngles(0.0D, 128.0D, 0.0D, this.world.rand.nextFloat() * 360.0F, 0.0F);

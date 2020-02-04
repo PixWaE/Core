@@ -86,10 +86,6 @@ public class ShapelessOreRecipe extends IForgeRegistryEntry.Impl<IRecipe> implem
         }
     }
 
-    /**
-     * Get the result of this recipe, usually for display purposes (e.g. recipe book). If your recipe has more than one
-     * possible result (e.g. it's dynamic and depends on its inputs), then return an empty stack.
-     */
     @Override
     @Nonnull
     public ItemStack getRecipeOutput(){ return output; }
@@ -140,9 +136,6 @@ public class ShapelessOreRecipe extends IForgeRegistryEntry.Impl<IRecipe> implem
         return this.input;
     }
 
-    /**
-     * Recipes with equal group are combined into one button in the recipe book
-     */
     @Override
     @Nonnull
     public String getGroup()

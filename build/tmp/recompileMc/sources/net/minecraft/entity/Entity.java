@@ -102,10 +102,6 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     private final List<Entity> riddenByEntities;
     protected int rideCooldown;
     private Entity ridingEntity;
-    /**
-     * If true, forces the World to spawn the entity and send it to clients even if the Chunk it is located in has not
-     * yet been loaded.
-     */
     public boolean forceSpawn;
     /** Reference to the World object. */
     public World world;
@@ -1155,7 +1151,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
 
                         try
                         {
-                            iblockstate.getBlock().onEntityCollision(this.world, blockpos$pooledmutableblockpos2, iblockstate, this);
+                            iblockstate.getBlock().onEntityCollidedWithBlock(this.world, blockpos$pooledmutableblockpos2, iblockstate, this);
                             this.onInsideBlock(iblockstate);
                         }
                         catch (Throwable throwable)
@@ -1561,7 +1557,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
             this.prevRotationYaw -= 360.0F;
         }
 
-        if (!this.world.isRemote) this.world.getChunk((int) Math.floor(this.posX) >> 4, (int) Math.floor(this.posZ) >> 4); // Forge - ensure target chunk is loaded.
+        if (!this.world.isRemote) this.world.getChunkFromChunkCoords((int) Math.floor(this.posX) >> 4, (int) Math.floor(this.posZ) >> 4); // Forge - ensure target chunk is loaded.
         this.setPosition(this.posX, this.posY, this.posZ);
         this.setRotation(yaw, pitch);
     }
@@ -1782,7 +1778,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     {
         Vec3d vec3d = this.getPositionEyes(partialTicks);
         Vec3d vec3d1 = this.getLook(partialTicks);
-        Vec3d vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
+        Vec3d vec3d2 = vec3d.addVector(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
         return this.world.rayTraceBlocks(vec3d, vec3d2, false, false, true);
     }
 
@@ -1976,7 +1972,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
                     }
                 }
 
-                if (!nbttaglist1.isEmpty())
+                if (!nbttaglist1.hasNoTags())
                 {
                     compound.setTag("Passengers", nbttaglist1);
                 }
@@ -2409,7 +2405,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     }
 
     /**
-     * Sets a target for the client to interpolate towards over the next few ticks
+     * Set the position and rotation values directly without any clamping.
      */
     @SideOnly(Side.CLIENT)
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport)
@@ -2443,7 +2439,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     @SideOnly(Side.CLIENT)
     public Vec3d getForward()
     {
-        return Vec3d.fromPitchYaw(this.getPitchYaw());
+        return Vec3d.fromPitchYawVector(this.getPitchYaw());
     }
 
     /**
@@ -2604,8 +2600,8 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
 
     /**
      * Only used by renderer in EntityLivingBase subclasses.
-     * Determines if an entity is visible or not to a specific player, if the entity is normally invisible.
-     * For EntityLivingBase subclasses, returning false when invisible will render the entity semi-transparent.
+     * Determines if an entity is visible or not to a specfic player, if the entity is normally invisible.
+     * For EntityLivingBase subclasses, returning false when invisible will render the entity semitransparent.
      */
     @SideOnly(Side.CLIENT)
     public boolean isInvisibleToPlayer(EntityPlayer player)
@@ -2787,39 +2783,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     }
 
     /**
-     * Gets the name of this thing. This method has slightly different behavior depending on the interface (for <a
-     * href="https://github.com/ModCoderPack/MCPBot-Issues/issues/14">technical reasons</a> the same method is used for
-     * both IWorldNameable and ICommandSender):
-     *  
-     * <dl>
-     * <dt>{@link net.minecraft.util.INameable#getName() INameable.getName()}</dt>
-     * <dd>Returns the name of this inventory. If this {@linkplain net.minecraft.inventory#hasCustomName() has a custom
-     * name} then this <em>should</em> be a direct string; otherwise it <em>should</em> be a valid translation
-     * string.</dd>
-     * <dd>However, note that <strong>the translation string may be invalid</strong>, as is the case for {@link
-     * net.minecraft.tileentity.TileEntityBanner TileEntityBanner} (always returns nonexistent translation code
-     * <code>banner</code> without a custom name), {@link net.minecraft.block.BlockAnvil.Anvil BlockAnvil$Anvil} (always
-     * returns <code>anvil</code>), {@link net.minecraft.block.BlockWorkbench.InterfaceCraftingTable
-     * BlockWorkbench$InterfaceCraftingTable} (always returns <code>crafting_table</code>), {@link
-     * net.minecraft.inventory.InventoryCraftResult InventoryCraftResult} (always returns <code>Result</code>) and the
-     * {@link net.minecraft.entity.item.EntityMinecart EntityMinecart} family (uses the entity definition). This is not
-     * an exaustive list.</dd>
-     * <dd>In general, this method should be safe to use on tile entities that implement IInventory.</dd>
-     * <dt>{@link net.minecraft.command.ICommandSender#getName() ICommandSender.getName()} and {@link
-     * net.minecraft.entity.Entity#getName() Entity.getName()}</dt>
-     * <dd>Returns a valid, displayable name (which may be localized). For most entities, this is the translated version
-     * of its translation string (obtained via {@link net.minecraft.entity.EntityList#getEntityString
-     * EntityList.getEntityString}).</dd>
-     * <dd>If this entity has a custom name set, this will return that name.</dd>
-     * <dd>For some entities, this will attempt to translate a nonexistent translation string; see <a
-     * href="https://bugs.mojang.com/browse/MC-68446">MC-68446</a>. For {@linkplain
-     * net.minecraft.entity.player.EntityPlayer#getName() players} this returns the player's name. For {@linkplain
-     * net.minecraft.entity.passive.EntityOcelot ocelots} this may return the translation of
-     * <code>entity.Cat.name</code> if it is tamed. For {@linkplain net.minecraft.entity.item.EntityItem#getName() item
-     * entities}, this will attempt to return the name of the item in that item entity. In all cases other than players,
-     * the custom name will overrule this.</dd>
-     * <dd>For non-entity command senders, this will return some arbitrary name, such as "Rcon" or "Server".</dd>
-     * </dl>
+     * Get the name of this object. For players this returns their username
      */
     public String getName()
     {
@@ -2841,10 +2805,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     }
 
     /**
-     * Return all subparts of this entity. These parts are not saved in the chunk and do not tick, but are detected by
-     * getEntitiesInAABB and are put in the entity ID map. Vanilla makes the assumption that the entities in this array
-     * have consecutive entity ID's after their owner ID, so you must construct all parts in the constructor of the
-     * parent.
+     * Return the Entity parts making up this Entity (currently only for dragons)
      */
     @Nullable
     public Entity[] getParts()
@@ -3171,25 +3132,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     }
 
     /**
-     * Returns a displayable component representing this thing's name. This method should be implemented slightly
-     * differently depending on the interface (for <a href="https://github.com/ModCoderPack/MCPBot-
-     * Issues/issues/14">technical reasons</a> the same method is used for both IWorldNameable and ICommandSender), but
-     * unlike {@link #getName()} this method will generally behave sanely.
-     *  
-     * <dl>
-     * <dt>{@link net.minecraft.util.INameable#getDisplayName() INameable.getDisplayName()}</dt>
-     * <dd>A normal component. Might be a translation component or a text component depending on the context. Usually
-     * implemented as:</dd>
-     * <dd><pre><code>return this.{@link net.minecraft.util.INameable#hasCustomName() hasCustomName()} ? new
-     * TextComponentString(this.{@link #getName()}) : new TextComponentTranslation(this.{@link
-     * #getName()});</code></pre></dd>
-     * <dt>{@link net.minecraft.command.ICommandSender#getDisplayName() ICommandSender.getDisplayName()} and {@link
-     * net.minecraft.entity.Entity#getDisplayName() Entity.getDisplayName()}</dt>
-     * <dd>For most entities, this returns the result of {@link #getName()}, with {@linkplain
-     * net.minecraft.scoreboard.ScorePlayerTeam#formatPlayerName scoreboard formatting} and a {@linkplain
-     * net.minecraft.entity.Entity#getHoverEvent special hover event}.</dd>
-     * <dd>For non-entity command senders, this will return the result of {@link #getName()} in a text component.</dd>
-     * </dl>
+     * Get the formatted ChatComponent that will be used for the sender's username in chat
      */
     public ITextComponent getDisplayName()
     {
@@ -3207,27 +3150,13 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
         this.dataManager.set(CUSTOM_NAME, name);
     }
 
-    /**
-     * Gets the custom name assigned to this entity. If no custom name has been assigned, returns an empty string.
-     */
     public String getCustomNameTag()
     {
         return (String)this.dataManager.get(CUSTOM_NAME);
     }
 
     /**
-     * Checks if this thing has a custom name. This method has slightly different behavior depending on the interface
-     * (for <a href="https://github.com/ModCoderPack/MCPBot-Issues/issues/14">technical reasons</a> the same method is
-     * used for both IWorldNameable and Entity):
-     *  
-     * <dl>
-     * <dt>{@link net.minecraft.util.INameable#hasCustomName() INameable.hasCustomName()}</dt>
-     * <dd>If true, then {@link #getName()} probably returns a preformatted name; otherwise, it probably returns a
-     * translation string. However, exact behavior varies.</dd>
-     * <dt>{@link net.minecraft.entity.Entity#hasCustomName() Entity.hasCustomName()}</dt>
-     * <dd>If true, then {@link net.minecraft.entity.Entity#getCustomNameTag() Entity.getCustomNameTag()} will return a
-     * non-empty string, which will be used by {@link #getName()}.</dd>
-     * </dl>
+     * Returns true if this thing is named
      */
     public boolean hasCustomName()
     {
@@ -3269,7 +3198,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
      */
     public EnumFacing getHorizontalFacing()
     {
-        return EnumFacing.byHorizontalIndex(MathHelper.floor((double)(this.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3);
+        return EnumFacing.getHorizontal(MathHelper.floor((double)(this.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3);
     }
 
     /**

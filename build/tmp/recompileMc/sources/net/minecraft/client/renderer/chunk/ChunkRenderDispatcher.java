@@ -318,7 +318,7 @@ public class ChunkRenderDispatcher
         }
     }
 
-    public boolean hasNoChunkUpdates()
+    public boolean hasChunkUpdates()
     {
         return this.queueChunkUpdates.isEmpty() && this.queueChunkUploads.isEmpty();
     }

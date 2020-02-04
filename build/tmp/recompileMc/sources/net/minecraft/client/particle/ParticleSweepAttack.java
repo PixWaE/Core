@@ -67,7 +67,7 @@ public class ParticleSweepAttack extends Particle
         }
     }
 
-    public int getBrightnessForRender(float partialTick)
+    public int getBrightnessForRender(float p_189214_1_)
     {
         return 61680;
     }

@@ -54,8 +54,6 @@ public class BlockPlanks extends Block
 
     /**
      * Get the MapColor for this Block and the given BlockState
-     * @deprecated call via {@link IBlockState#getMapColor(IBlockAccess,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
      */
     public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
@@ -87,7 +85,7 @@ public class BlockPlanks extends Block
         private static final BlockPlanks.EnumType[] META_LOOKUP = new BlockPlanks.EnumType[values().length];
         private final int meta;
         private final String name;
-        private final String translationKey;
+        private final String unlocalizedName;
         /** The color that represents this entry on a map. */
         private final MapColor mapColor;
 
@@ -100,7 +98,7 @@ public class BlockPlanks extends Block
         {
             this.meta = metaIn;
             this.name = nameIn;
-            this.translationKey = unlocalizedNameIn;
+            this.unlocalizedName = unlocalizedNameIn;
             this.mapColor = mapColorIn;
         }
 
@@ -137,9 +135,9 @@ public class BlockPlanks extends Block
             return this.name;
         }
 
-        public String getTranslationKey()
+        public String getUnlocalizedName()
         {
-            return this.translationKey;
+            return this.unlocalizedName;
         }
 
         static

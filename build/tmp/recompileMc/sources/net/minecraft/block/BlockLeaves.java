@@ -185,11 +185,6 @@ public abstract class BlockLeaves extends Block implements net.minecraftforge.co
         worldIn.setBlockToAir(pos);
     }
 
-    /**
-     * Called periodically clientside on blocks near the player to show effects (like furnace fire particles). Note that
-     * this method is unrelated to {@link randomTick} and {@link #needsRandomTick}, and will always be called regardless
-     * of whether the block can receive random update ticks
-     */
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState stateIn, World worldIn, BlockPos pos, Random rand)
     {
@@ -237,7 +232,6 @@ public abstract class BlockLeaves extends Block implements net.minecraftforge.co
 
     /**
      * Used to determine ambient occlusion and culling when rebuilding chunks for render
-     * @deprecated call via {@link IBlockState#isOpaqueCube()} whenever possible. Implementing/overriding is fine.
      */
     public boolean isOpaqueCube(IBlockState state)
     {
@@ -253,19 +247,12 @@ public abstract class BlockLeaves extends Block implements net.minecraftforge.co
         this.leavesFancy = fancy;
     }
 
-    /**
-     * Gets the render layer this block will render on. SOLID for solid blocks, CUTOUT or CUTOUT_MIPPED for on-off
-     * transparency (glass, reeds), TRANSLUCENT for fully blended transparency (stained glass)
-     */
     @SideOnly(Side.CLIENT)
-    public BlockRenderLayer getRenderLayer()
+    public BlockRenderLayer getBlockLayer()
     {
         return this.leavesFancy ? BlockRenderLayer.CUTOUT_MIPPED : BlockRenderLayer.SOLID;
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#causesSuffocation()} whenever possible. Implementing/overriding is fine.
-     */
     public boolean causesSuffocation(IBlockState state)
     {
         return false;
@@ -318,10 +305,6 @@ public abstract class BlockLeaves extends Block implements net.minecraftforge.co
     }
 
 
-    /**
-     * @deprecated call via {@link IBlockState#shouldSideBeRendered(IBlockAccess,BlockPos,EnumFacing)} whenever
-     * possible. Implementing/overriding is fine.
-     */
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side)
     {

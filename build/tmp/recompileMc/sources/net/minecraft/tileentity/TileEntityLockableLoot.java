@@ -92,18 +92,7 @@ public abstract class TileEntityLockableLoot extends TileEntityLockable implemen
     }
 
     /**
-     * Checks if this thing has a custom name. This method has slightly different behavior depending on the interface
-     * (for <a href="https://github.com/ModCoderPack/MCPBot-Issues/issues/14">technical reasons</a> the same method is
-     * used for both IWorldNameable and Entity):
-     *  
-     * <dl>
-     * <dt>{@link net.minecraft.util.INameable#hasCustomName() INameable.hasCustomName()}</dt>
-     * <dd>If true, then {@link #getName()} probably returns a preformatted name; otherwise, it probably returns a
-     * translation string. However, exact behavior varies.</dd>
-     * <dt>{@link net.minecraft.entity.Entity#hasCustomName() Entity.hasCustomName()}</dt>
-     * <dd>If true, then {@link net.minecraft.entity.Entity#getCustomNameTag() Entity.getCustomNameTag()} will return a
-     * non-empty string, which will be used by {@link #getName()}.</dd>
-     * </dl>
+     * Returns true if this thing is named
      */
     public boolean hasCustomName()
     {

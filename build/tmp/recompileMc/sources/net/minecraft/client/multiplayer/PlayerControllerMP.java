@@ -197,7 +197,7 @@ public class PlayerControllerMP
 
                 if (flag)
                 {
-                    block.onPlayerDestroy(world, pos, iblockstate);
+                    block.onBlockDestroyedByPlayer(world, pos, iblockstate);
                 }
                 return flag;
             }
@@ -380,7 +380,7 @@ public class PlayerControllerMP
         }
         else
         {
-            this.connection.getNetworkManager().handleDisconnection();
+            this.connection.getNetworkManager().checkDisconnected();
         }
     }
 

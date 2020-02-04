@@ -784,8 +784,6 @@ public abstract class EntityPlayer extends EntityLivingBase
 
     /**
      * Drops an item into the world.
-     *  
-     * @param unused Whether to trace the item to the player
      */
     @Nullable
     public EntityItem dropItem(ItemStack itemStackIn, boolean unused)
@@ -793,15 +791,6 @@ public abstract class EntityPlayer extends EntityLivingBase
         return net.minecraftforge.common.ForgeHooks.onPlayerTossEvent(this, itemStackIn, false);
     }
 
-    /**
-     * Creates and drops the provided item. Depending on the dropAround, it will drop teh item around the player,
-     * instead of dropping the item from where the player is pointing at. Likewise, if traceItem is true, the dropped
-     * item entity will have the thrower set as the player.
-     *  
-     * @param dropAround Whether the item is dropped around the player, otherwise dropped in front of the player in the
-     * direction the player is pointing at
-     * @param traceItem Whether to trace the item to this player as the thrower
-     */
     @Nullable
     public EntityItem dropItem(ItemStack droppedItem, boolean dropAround, boolean traceItem)
     {
@@ -1075,12 +1064,12 @@ public abstract class EntityPlayer extends EntityLivingBase
         this.capabilities.writeCapabilitiesToNBT(compound);
         compound.setTag("EnderItems", this.enderChest.saveInventoryToNBT());
 
-        if (!this.getLeftShoulderEntity().isEmpty())
+        if (!this.getLeftShoulderEntity().hasNoTags())
         {
             compound.setTag("ShoulderEntityLeft", this.getLeftShoulderEntity());
         }
 
-        if (!this.getRightShoulderEntity().isEmpty())
+        if (!this.getRightShoulderEntity().hasNoTags())
         {
             compound.setTag("ShoulderEntityRight", this.getRightShoulderEntity());
         }
@@ -1289,51 +1278,51 @@ public abstract class EntityPlayer extends EntityLivingBase
     {
     }
 
-    public EnumActionResult interactOn(Entity entityToInteractOn, EnumHand hand)
+    public EnumActionResult interactOn(Entity p_190775_1_, EnumHand p_190775_2_)
     {
         if (this.isSpectator())
         {
-            if (entityToInteractOn instanceof IInventory)
+            if (p_190775_1_ instanceof IInventory)
             {
-                this.displayGUIChest((IInventory)entityToInteractOn);
+                this.displayGUIChest((IInventory)p_190775_1_);
             }
 
             return EnumActionResult.PASS;
         }
         else
         {
-            EnumActionResult cancelResult = net.minecraftforge.common.ForgeHooks.onInteractEntity(this, entityToInteractOn, hand);
+            EnumActionResult cancelResult = net.minecraftforge.common.ForgeHooks.onInteractEntity(this, p_190775_1_, p_190775_2_);
             if (cancelResult != null) return cancelResult;
-            ItemStack itemstack = this.getHeldItem(hand);
+            ItemStack itemstack = this.getHeldItem(p_190775_2_);
             ItemStack itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy();
 
-            if (entityToInteractOn.processInitialInteract(this, hand))
+            if (p_190775_1_.processInitialInteract(this, p_190775_2_))
             {
-                if (this.capabilities.isCreativeMode && itemstack == this.getHeldItem(hand) && itemstack.getCount() < itemstack1.getCount())
+                if (this.capabilities.isCreativeMode && itemstack == this.getHeldItem(p_190775_2_) && itemstack.getCount() < itemstack1.getCount())
                 {
                     itemstack.setCount(itemstack1.getCount());
                 }
                 if (!this.capabilities.isCreativeMode && itemstack.isEmpty())
                 {
-                    net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(this, itemstack1, hand);
+                    net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(this, itemstack1, p_190775_2_);
                 }
                 return EnumActionResult.SUCCESS;
             }
             else
             {
-                if (!itemstack.isEmpty() && entityToInteractOn instanceof EntityLivingBase)
+                if (!itemstack.isEmpty() && p_190775_1_ instanceof EntityLivingBase)
                 {
                     if (this.capabilities.isCreativeMode)
                     {
                         itemstack = itemstack1;
                     }
 
-                    if (itemstack.interactWithEntity(this, (EntityLivingBase)entityToInteractOn, hand))
+                    if (itemstack.interactWithEntity(this, (EntityLivingBase)p_190775_1_, p_190775_2_))
                     {
                         if (itemstack.isEmpty() && !this.capabilities.isCreativeMode)
                         {
-                            net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(this, itemstack1, hand);
-                            this.setHeldItem(hand, ItemStack.EMPTY);
+                            net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(this, itemstack1, p_190775_2_);
+                            this.setHeldItem(p_190775_2_, ItemStack.EMPTY);
                         }
 
                         return EnumActionResult.SUCCESS;
@@ -1683,7 +1672,7 @@ public abstract class EntityPlayer extends EntityLivingBase
                 return EntityPlayer.SleepResult.NOT_POSSIBLE_HERE;
             }
 
-            if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(this, bedLocation))
+            if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(this, this.bedLocation))
             {
                 return EntityPlayer.SleepResult.NOT_POSSIBLE_NOW;
             }
@@ -1712,8 +1701,8 @@ public abstract class EntityPlayer extends EntityLivingBase
         this.setSize(0.2F, 0.2F);
 
         if (enumfacing != null) {
-            float f1 = 0.5F + (float)enumfacing.getXOffset() * 0.4F;
-            float f = 0.5F + (float)enumfacing.getZOffset() * 0.4F;
+            float f1 = 0.5F + (float)enumfacing.getFrontOffsetX() * 0.4F;
+            float f = 0.5F + (float)enumfacing.getFrontOffsetZ() * 0.4F;
             this.setRenderOffsetForSleep(enumfacing);
             this.setPosition((double)((float)bedLocation.getX() + f1), (double)((float)bedLocation.getY() + 0.6875F), (double)((float)bedLocation.getZ() + f));
         }
@@ -1753,8 +1742,8 @@ public abstract class EntityPlayer extends EntityLivingBase
 
     private void setRenderOffsetForSleep(EnumFacing bedDirection)
     {
-        this.renderOffsetX = -1.8F * (float)bedDirection.getXOffset();
-        this.renderOffsetZ = -1.8F * (float)bedDirection.getZOffset();
+        this.renderOffsetX = -1.8F * (float)bedDirection.getFrontOffsetX();
+        this.renderOffsetZ = -1.8F * (float)bedDirection.getFrontOffsetZ();
     }
 
     /**
@@ -2367,39 +2356,7 @@ public abstract class EntityPlayer extends EntityLivingBase
     }
 
     /**
-     * Gets the name of this thing. This method has slightly different behavior depending on the interface (for <a
-     * href="https://github.com/ModCoderPack/MCPBot-Issues/issues/14">technical reasons</a> the same method is used for
-     * both IWorldNameable and ICommandSender):
-     *  
-     * <dl>
-     * <dt>{@link net.minecraft.util.INameable#getName() INameable.getName()}</dt>
-     * <dd>Returns the name of this inventory. If this {@linkplain net.minecraft.inventory#hasCustomName() has a custom
-     * name} then this <em>should</em> be a direct string; otherwise it <em>should</em> be a valid translation
-     * string.</dd>
-     * <dd>However, note that <strong>the translation string may be invalid</strong>, as is the case for {@link
-     * net.minecraft.tileentity.TileEntityBanner TileEntityBanner} (always returns nonexistent translation code
-     * <code>banner</code> without a custom name), {@link net.minecraft.block.BlockAnvil.Anvil BlockAnvil$Anvil} (always
-     * returns <code>anvil</code>), {@link net.minecraft.block.BlockWorkbench.InterfaceCraftingTable
-     * BlockWorkbench$InterfaceCraftingTable} (always returns <code>crafting_table</code>), {@link
-     * net.minecraft.inventory.InventoryCraftResult InventoryCraftResult} (always returns <code>Result</code>) and the
-     * {@link net.minecraft.entity.item.EntityMinecart EntityMinecart} family (uses the entity definition). This is not
-     * an exaustive list.</dd>
-     * <dd>In general, this method should be safe to use on tile entities that implement IInventory.</dd>
-     * <dt>{@link net.minecraft.command.ICommandSender#getName() ICommandSender.getName()} and {@link
-     * net.minecraft.entity.Entity#getName() Entity.getName()}</dt>
-     * <dd>Returns a valid, displayable name (which may be localized). For most entities, this is the translated version
-     * of its translation string (obtained via {@link net.minecraft.entity.EntityList#getEntityString
-     * EntityList.getEntityString}).</dd>
-     * <dd>If this entity has a custom name set, this will return that name.</dd>
-     * <dd>For some entities, this will attempt to translate a nonexistent translation string; see <a
-     * href="https://bugs.mojang.com/browse/MC-68446">MC-68446</a>. For {@linkplain
-     * net.minecraft.entity.player.EntityPlayer#getName() players} this returns the player's name. For {@linkplain
-     * net.minecraft.entity.passive.EntityOcelot ocelots} this may return the translation of
-     * <code>entity.Cat.name</code> if it is tamed. For {@linkplain net.minecraft.entity.item.EntityItem#getName() item
-     * entities}, this will attempt to return the name of the item in that item entity. In all cases other than players,
-     * the custom name will overrule this.</dd>
-     * <dd>For non-entity command senders, this will return some arbitrary name, such as "Rcon" or "Server".</dd>
-     * </dl>
+     * Get the name of this object. For players this returns their username
      */
     public String getName()
     {
@@ -2469,12 +2426,12 @@ public abstract class EntityPlayer extends EntityLivingBase
     {
         if (!this.isRiding() && this.onGround && !this.isInWater())
         {
-            if (this.getLeftShoulderEntity().isEmpty())
+            if (this.getLeftShoulderEntity().hasNoTags())
             {
                 this.setLeftShoulderEntity(p_192027_1_);
                 return true;
             }
-            else if (this.getRightShoulderEntity().isEmpty())
+            else if (this.getRightShoulderEntity().hasNoTags())
             {
                 this.setRightShoulderEntity(p_192027_1_);
                 return true;
@@ -2500,7 +2457,7 @@ public abstract class EntityPlayer extends EntityLivingBase
 
     private void spawnShoulderEntity(@Nullable NBTTagCompound p_192026_1_)
     {
-        if (!this.world.isRemote && !p_192026_1_.isEmpty())
+        if (!this.world.isRemote && !p_192026_1_.hasNoTags())
         {
             Entity entity = EntityList.createEntityFromNBT(p_192026_1_, this.world);
 
@@ -2516,8 +2473,8 @@ public abstract class EntityPlayer extends EntityLivingBase
 
     /**
      * Only used by renderer in EntityLivingBase subclasses.
-     * Determines if an entity is visible or not to a specific player, if the entity is normally invisible.
-     * For EntityLivingBase subclasses, returning false when invisible will render the entity semi-transparent.
+     * Determines if an entity is visible or not to a specfic player, if the entity is normally invisible.
+     * For EntityLivingBase subclasses, returning false when invisible will render the entity semitransparent.
      */
     @SideOnly(Side.CLIENT)
     public boolean isInvisibleToPlayer(EntityPlayer player)
@@ -2560,25 +2517,7 @@ public abstract class EntityPlayer extends EntityLivingBase
     }
 
     /**
-     * Returns a displayable component representing this thing's name. This method should be implemented slightly
-     * differently depending on the interface (for <a href="https://github.com/ModCoderPack/MCPBot-
-     * Issues/issues/14">technical reasons</a> the same method is used for both IWorldNameable and ICommandSender), but
-     * unlike {@link #getName()} this method will generally behave sanely.
-     *  
-     * <dl>
-     * <dt>{@link net.minecraft.util.INameable#getDisplayName() INameable.getDisplayName()}</dt>
-     * <dd>A normal component. Might be a translation component or a text component depending on the context. Usually
-     * implemented as:</dd>
-     * <dd><pre><code>return this.{@link net.minecraft.util.INameable#hasCustomName() hasCustomName()} ? new
-     * TextComponentString(this.{@link #getName()}) : new TextComponentTranslation(this.{@link
-     * #getName()});</code></pre></dd>
-     * <dt>{@link net.minecraft.command.ICommandSender#getDisplayName() ICommandSender.getDisplayName()} and {@link
-     * net.minecraft.entity.Entity#getDisplayName() Entity.getDisplayName()}</dt>
-     * <dd>For most entities, this returns the result of {@link #getName()}, with {@linkplain
-     * net.minecraft.scoreboard.ScorePlayerTeam#formatPlayerName scoreboard formatting} and a {@linkplain
-     * net.minecraft.entity.Entity#getHoverEvent special hover event}.</dd>
-     * <dd>For non-entity command senders, this will return the result of {@link #getName()} in a text component.</dd>
-     * </dl>
+     * Get the formatted ChatComponent that will be used for the sender's username in chat
      */
     public ITextComponent getDisplayName()
     {

@@ -19,7 +19,7 @@ public abstract class CreativeTabs
     public static final CreativeTabs BUILDING_BLOCKS = new CreativeTabs(0, "buildingBlocks")
     {
         @SideOnly(Side.CLIENT)
-        public ItemStack createIcon()
+        public ItemStack getTabIconItem()
         {
             return new ItemStack(Item.getItemFromBlock(Blocks.BRICK_BLOCK));
         }
@@ -27,7 +27,7 @@ public abstract class CreativeTabs
     public static final CreativeTabs DECORATIONS = new CreativeTabs(1, "decorations")
     {
         @SideOnly(Side.CLIENT)
-        public ItemStack createIcon()
+        public ItemStack getTabIconItem()
         {
             return new ItemStack(Item.getItemFromBlock(Blocks.DOUBLE_PLANT), 1, BlockDoublePlant.EnumPlantType.PAEONIA.getMeta());
         }
@@ -35,7 +35,7 @@ public abstract class CreativeTabs
     public static final CreativeTabs REDSTONE = new CreativeTabs(2, "redstone")
     {
         @SideOnly(Side.CLIENT)
-        public ItemStack createIcon()
+        public ItemStack getTabIconItem()
         {
             return new ItemStack(Items.REDSTONE);
         }
@@ -43,7 +43,7 @@ public abstract class CreativeTabs
     public static final CreativeTabs TRANSPORTATION = new CreativeTabs(3, "transportation")
     {
         @SideOnly(Side.CLIENT)
-        public ItemStack createIcon()
+        public ItemStack getTabIconItem()
         {
             return new ItemStack(Item.getItemFromBlock(Blocks.GOLDEN_RAIL));
         }
@@ -51,7 +51,7 @@ public abstract class CreativeTabs
     public static final CreativeTabs MISC = new CreativeTabs(6, "misc")
     {
         @SideOnly(Side.CLIENT)
-        public ItemStack createIcon()
+        public ItemStack getTabIconItem()
         {
             return new ItemStack(Items.LAVA_BUCKET);
         }
@@ -59,7 +59,7 @@ public abstract class CreativeTabs
     public static final CreativeTabs SEARCH = (new CreativeTabs(5, "search")
     {
         @SideOnly(Side.CLIENT)
-        public ItemStack createIcon()
+        public ItemStack getTabIconItem()
         {
             return new ItemStack(Items.COMPASS);
         }
@@ -67,7 +67,7 @@ public abstract class CreativeTabs
     public static final CreativeTabs FOOD = new CreativeTabs(7, "food")
     {
         @SideOnly(Side.CLIENT)
-        public ItemStack createIcon()
+        public ItemStack getTabIconItem()
         {
             return new ItemStack(Items.APPLE);
         }
@@ -75,7 +75,7 @@ public abstract class CreativeTabs
     public static final CreativeTabs TOOLS = (new CreativeTabs(8, "tools")
     {
         @SideOnly(Side.CLIENT)
-        public ItemStack createIcon()
+        public ItemStack getTabIconItem()
         {
             return new ItemStack(Items.IRON_AXE);
         }
@@ -83,7 +83,7 @@ public abstract class CreativeTabs
     public static final CreativeTabs COMBAT = (new CreativeTabs(9, "combat")
     {
         @SideOnly(Side.CLIENT)
-        public ItemStack createIcon()
+        public ItemStack getTabIconItem()
         {
             return new ItemStack(Items.GOLDEN_SWORD);
         }
@@ -91,7 +91,7 @@ public abstract class CreativeTabs
     public static final CreativeTabs BREWING = new CreativeTabs(10, "brewing")
     {
         @SideOnly(Side.CLIENT)
-        public ItemStack createIcon()
+        public ItemStack getTabIconItem()
         {
             return PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), PotionTypes.WATER);
         }
@@ -100,7 +100,7 @@ public abstract class CreativeTabs
     public static final CreativeTabs HOTBAR = new CreativeTabs(4, "hotbar")
     {
         @SideOnly(Side.CLIENT)
-        public ItemStack createIcon()
+        public ItemStack getTabIconItem()
         {
             return new ItemStack(Blocks.BOOKSHELF);
         }
@@ -121,12 +121,12 @@ public abstract class CreativeTabs
     public static final CreativeTabs INVENTORY = (new CreativeTabs(11, "inventory")
     {
         @SideOnly(Side.CLIENT)
-        public ItemStack createIcon()
+        public ItemStack getTabIconItem()
         {
             return new ItemStack(Item.getItemFromBlock(Blocks.CHEST));
         }
     }).setBackgroundImageName("inventory.png").setNoScrollbar().setNoTitle();
-    private final int index;
+    private final int tabIndex;
     private final String tabLabel;
     /** Texture to use. */
     private String backgroundTexture = "items.png";
@@ -134,7 +134,7 @@ public abstract class CreativeTabs
     /** Whether to draw the title in the foreground of the creative GUI */
     private boolean drawTitle = true;
     private EnumEnchantmentType[] enchantmentTypes = new EnumEnchantmentType[0];
-    private ItemStack icon;
+    private ItemStack iconItemStack;
 
     public CreativeTabs(String label)
     {
@@ -152,16 +152,16 @@ public abstract class CreativeTabs
             }
             CREATIVE_TAB_ARRAY = tmp;
         }
-        this.index = index;
+        this.tabIndex = index;
         this.tabLabel = label;
-        this.icon = ItemStack.EMPTY;
+        this.iconItemStack = ItemStack.EMPTY;
         CREATIVE_TAB_ARRAY[index] = this;
     }
 
     @SideOnly(Side.CLIENT)
-    public int getIndex()
+    public int getTabIndex()
     {
-        return this.index;
+        return this.tabIndex;
     }
 
     public CreativeTabs setBackgroundImageName(String texture)
@@ -180,24 +180,24 @@ public abstract class CreativeTabs
      * Gets the translated Label.
      */
     @SideOnly(Side.CLIENT)
-    public String getTranslationKey()
+    public String getTranslatedTabLabel()
     {
         return "itemGroup." + this.getTabLabel();
     }
 
     @SideOnly(Side.CLIENT)
-    public ItemStack getIcon()
+    public ItemStack getIconItemStack()
     {
-        if (this.icon.isEmpty())
+        if (this.iconItemStack.isEmpty())
         {
-            this.icon = this.createIcon();
+            this.iconItemStack = this.getTabIconItem();
         }
 
-        return this.icon;
+        return this.iconItemStack;
     }
 
     @SideOnly(Side.CLIENT)
-    public abstract ItemStack createIcon();
+    public abstract ItemStack getTabIconItem();
 
     @SideOnly(Side.CLIENT)
     public String getBackgroundImageName()
@@ -218,7 +218,7 @@ public abstract class CreativeTabs
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean hasScrollbar()
+    public boolean shouldHidePlayerInventory()
     {
         return this.hasScrollbar;
     }
@@ -233,32 +233,32 @@ public abstract class CreativeTabs
      * returns index % 6
      */
     @SideOnly(Side.CLIENT)
-    public int getColumn()
+    public int getTabColumn()
     {
-        if (index > 11)
+        if (tabIndex > 11)
         {
-            return ((index - 12) % 10) % 5;
+            return ((tabIndex - 12) % 10) % 5;
         }
-        return this.index % 6;
+        return this.tabIndex % 6;
     }
 
     /**
      * returns tabIndex < 6
      */
     @SideOnly(Side.CLIENT)
-    public boolean isOnTopRow()
+    public boolean isTabInFirstRow()
     {
-        if (index > 11)
+        if (tabIndex > 11)
         {
-            return ((index - 12) % 10) < 5;
+            return ((tabIndex - 12) % 10) < 5;
         }
-        return this.index < 6;
+        return this.tabIndex < 6;
     }
 
     @SideOnly(Side.CLIENT)
     public boolean isAlignedRight()
     {
-        return this.getColumn() == 5;
+        return this.getTabColumn() == 5;
     }
 
     /**
@@ -308,9 +308,9 @@ public abstract class CreativeTabs
 
     public int getTabPage()
     {
-        if (index > 11)
+        if (tabIndex > 11)
         {
-            return ((index - 12) / 10) + 1;
+            return ((tabIndex - 12) / 10) + 1;
         }
         return 0;
     }
@@ -327,7 +327,7 @@ public abstract class CreativeTabs
      */
     public boolean hasSearchBar()
     {
-        return index == CreativeTabs.SEARCH.index;
+        return tabIndex == CreativeTabs.SEARCH.tabIndex;
     }
 
     /**
@@ -345,10 +345,5 @@ public abstract class CreativeTabs
     public net.minecraft.util.ResourceLocation getBackgroundImage()
     {
         return new net.minecraft.util.ResourceLocation("textures/gui/container/creative_inventory/tab_" + this.getBackgroundImageName());
-    }
-
-    public int getLabelColor()
-    {
-        return 4210752;
     }
 }

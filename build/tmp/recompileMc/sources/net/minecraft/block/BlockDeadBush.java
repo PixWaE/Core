@@ -26,10 +26,6 @@ public class BlockDeadBush extends BlockBush implements net.minecraftforge.commo
         super(Material.VINE);
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#getBoundingBox(IBlockAccess,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
-     */
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
         return DEAD_BUSH_AABB;
@@ -37,8 +33,6 @@ public class BlockDeadBush extends BlockBush implements net.minecraftforge.commo
 
     /**
      * Get the MapColor for this Block and the given BlockState
-     * @deprecated call via {@link IBlockState#getMapColor(IBlockAccess,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
      */
     public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {

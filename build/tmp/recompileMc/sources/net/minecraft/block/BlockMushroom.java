@@ -19,10 +19,6 @@ public class BlockMushroom extends BlockBush implements IGrowable
         this.setTickRandomly(true);
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#getBoundingBox(IBlockAccess,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
-     */
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
         return MUSHROOM_AABB;

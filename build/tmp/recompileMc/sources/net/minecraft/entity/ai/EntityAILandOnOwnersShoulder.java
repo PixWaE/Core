@@ -10,9 +10,9 @@ public class EntityAILandOnOwnersShoulder extends EntityAIBase
     private EntityPlayer owner;
     private boolean isSittingOnShoulder;
 
-    public EntityAILandOnOwnersShoulder(EntityShoulderRiding entityIn)
+    public EntityAILandOnOwnersShoulder(EntityShoulderRiding p_i47415_1_)
     {
-        this.entity = entityIn;
+        this.entity = p_i47415_1_;
     }
 
     /**

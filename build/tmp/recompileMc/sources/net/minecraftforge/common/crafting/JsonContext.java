@@ -58,11 +58,11 @@ public class JsonContext
         return constants.get(name);
     }
 
-    void loadConstants(JsonObject... jsons)
+    void loadConstants(JsonObject[] jsons)
     {
         for (JsonObject json : jsons)
         {
-            if (!CraftingHelper.processConditions(json, "conditions", this))
+            if (json.has("conditions") && !CraftingHelper.processConditions(json.getAsJsonArray("conditions"), this))
                 continue;
             if (!json.has("ingredient"))
                 throw new JsonSyntaxException("Constant entry must contain 'ingredient' value");

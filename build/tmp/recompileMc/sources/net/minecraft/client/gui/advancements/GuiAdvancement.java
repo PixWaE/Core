@@ -194,7 +194,7 @@ public class GuiAdvancement extends Gui
         }
     }
 
-    public void setAdvancementProgress(AdvancementProgress advancementProgressIn)
+    public void getAdvancementProgress(AdvancementProgress advancementProgressIn)
     {
         this.advancementProgress = advancementProgressIn;
     }

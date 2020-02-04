@@ -20,10 +20,6 @@ import org.apache.logging.log4j.Logger;
 public class FallbackResourceManager implements IResourceManager
 {
     private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * All resource packs for this domain, as ordered by the options menu. Packs later in the list have higher priority
-     * than those earlier in the list.
-     */
     protected final List<IResourcePack> resourcePacks = Lists.<IResourcePack>newArrayList();
     private final MetadataSerializer frmMetadataSerializer;
 
@@ -82,16 +78,12 @@ public class FallbackResourceManager implements IResourceManager
 
     private void checkResourcePath(ResourceLocation p_188552_1_) throws IOException
     {
-        if (p_188552_1_.getPath().contains(".."))
+        if (p_188552_1_.getResourcePath().contains(".."))
         {
             throw new IOException("Invalid relative path to resource: " + p_188552_1_);
         }
     }
 
-    /**
-     * Gets all versions of the resource identified by {@code location}. The list is ordered by resource pack priority
-     * from lowest to highest.
-     */
     public List<IResource> getAllResources(ResourceLocation location) throws IOException
     {
         this.checkResourcePath(location);
@@ -119,7 +111,7 @@ public class FallbackResourceManager implements IResourceManager
 
     static ResourceLocation getLocationMcmeta(ResourceLocation location)
     {
-        return new ResourceLocation(location.getNamespace(), location.getPath() + ".mcmeta");
+        return new ResourceLocation(location.getResourceDomain(), location.getResourcePath() + ".mcmeta");
     }
 
     @SideOnly(Side.CLIENT)

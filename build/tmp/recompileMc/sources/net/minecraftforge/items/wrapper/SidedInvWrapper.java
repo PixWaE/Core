@@ -25,8 +25,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import java.util.Objects;
-
 import javax.annotation.Nonnull;
 
 public class SidedInvWrapper implements IItemHandlerModifiable
@@ -65,7 +63,7 @@ public class SidedInvWrapper implements IItemHandlerModifiable
     public int hashCode()
     {
         int result = inv.hashCode();
-        result = 31 * result + Objects.hashCode(side);
+        result = 31 * result + side.hashCode();
         return result;
     }
 
@@ -236,7 +234,6 @@ public class SidedInvWrapper implements IItemHandlerModifiable
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack)
     {
-        int slot1 = getSlot(inv, slot, side);
-        return slot1 == -1 ? false : inv.isItemValidForSlot(slot1, stack);
+        return inv.isItemValidForSlot(slot, stack);
     }
 }

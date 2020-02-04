@@ -179,10 +179,10 @@ public class BlockColors
         }
     }
 
-    public int colorMultiplier(IBlockState state, @Nullable IBlockAccess blockAccess, @Nullable BlockPos pos, int tintIndex)
+    public int colorMultiplier(IBlockState state, @Nullable IBlockAccess blockAccess, @Nullable BlockPos pos, int renderPass)
     {
         IBlockColor iblockcolor = this.blockColorMap.get(state.getBlock().delegate);
-        return iblockcolor == null ? -1 : iblockcolor.colorMultiplier(state, blockAccess, pos, tintIndex);
+        return iblockcolor == null ? -1 : iblockcolor.colorMultiplier(state, blockAccess, pos, renderPass);
     }
 
     public void registerBlockColorHandler(IBlockColor blockColor, Block... blocksIn)

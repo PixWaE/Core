@@ -60,7 +60,7 @@ public class NBTTagString extends NBTBase
     /**
      * Return whether this compound has no tags.
      */
-    public boolean isEmpty()
+    public boolean hasNoTags()
     {
         return this.data.isEmpty();
     }

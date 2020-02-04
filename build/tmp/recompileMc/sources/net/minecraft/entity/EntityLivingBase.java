@@ -95,7 +95,7 @@ public abstract class EntityLivingBase extends Entity
     private static final DataParameter<Boolean> HIDE_PARTICLES = EntityDataManager.<Boolean>createKey(EntityLivingBase.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> ARROW_COUNT_IN_ENTITY = EntityDataManager.<Integer>createKey(EntityLivingBase.class, DataSerializers.VARINT);
     private AbstractAttributeMap attributeMap;
-    private final CombatTracker combatTracker = new CombatTracker(this);
+    private final CombatTracker _combatTracker = new CombatTracker(this);
     private final Map<Potion, PotionEffect> activePotionsMap = Maps.<Potion, PotionEffect>newHashMap();
     private final NonNullList<ItemStack> handInventory = NonNullList.<ItemStack>withSize(2, ItemStack.EMPTY);
     /** The array of item stacks that are used for armor in a living inventory. */
@@ -520,6 +520,7 @@ public abstract class EntityLivingBase extends Entity
     {
         this.revengeTarget = livingBase;
         this.revengeTimer = this.ticksExisted;
+        net.minecraftforge.common.ForgeHooks.onLivingSetAttackTarget(this, livingBase);
     }
 
     public EntityLivingBase getLastAttackedEntity()
@@ -686,7 +687,7 @@ public abstract class EntityLivingBase extends Entity
 
                 if (!potioneffect.onUpdate(this))
                 {
-                    if (!this.world.isRemote && !net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.PotionEvent.PotionExpiryEvent(this, potioneffect)))
+                    if (!this.world.isRemote)
                     {
                         iterator.remove();
                         this.onFinishedPotionEffect(potioneffect);
@@ -799,10 +800,7 @@ public abstract class EntityLivingBase extends Entity
 
             while (iterator.hasNext())
             {
-                PotionEffect effect = iterator.next();
-                if(net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.PotionEvent.PotionRemoveEvent(this, effect))) continue;
-
-                this.onFinishedPotionEffect(effect);
+                this.onFinishedPotionEffect(iterator.next());
                 iterator.remove();
             }
         }
@@ -841,7 +839,6 @@ public abstract class EntityLivingBase extends Entity
         {
             PotionEffect potioneffect = this.activePotionsMap.get(potioneffectIn.getPotion());
 
-            net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.PotionEvent.PotionAddedEvent(this, potioneffect, potioneffectIn));
             if (potioneffect == null)
             {
                 this.activePotionsMap.put(potioneffectIn.getPotion(), potioneffectIn);
@@ -857,9 +854,6 @@ public abstract class EntityLivingBase extends Entity
 
     public boolean isPotionApplicable(PotionEffect potioneffectIn)
     {
-        net.minecraftforge.event.entity.living.PotionEvent.PotionApplicableEvent event = new net.minecraftforge.event.entity.living.PotionEvent.PotionApplicableEvent(this, potioneffectIn);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event);
-        if (event.getResult() != net.minecraftforge.fml.common.eventhandler.Event.Result.DEFAULT) return event.getResult() == net.minecraftforge.fml.common.eventhandler.Event.Result.ALLOW;
         if (this.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD)
         {
             Potion potion = potioneffectIn.getPotion();
@@ -896,7 +890,6 @@ public abstract class EntityLivingBase extends Entity
      */
     public void removePotionEffect(Potion potionIn)
     {
-        if(net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.PotionEvent.PotionRemoveEvent(this, potionIn))) return;
         PotionEffect potioneffect = this.removeActivePotionEffect(potionIn);
 
         if (potioneffect != null)
@@ -1274,7 +1267,7 @@ public abstract class EntityLivingBase extends Entity
             Vec3d vec3d1 = new Vec3d(((double)this.rand.nextFloat() - 0.5D) * 0.3D, d0, 0.6D);
             vec3d1 = vec3d1.rotatePitch(-this.rotationPitch * 0.017453292F);
             vec3d1 = vec3d1.rotateYaw(-this.rotationYaw * 0.017453292F);
-            vec3d1 = vec3d1.add(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ);
+            vec3d1 = vec3d1.addVector(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ);
             if (this.world instanceof WorldServer) //Forge: Fix MC-2518 spawnParticle is nooped on server, need to use server specific variant
                 ((WorldServer)this.world).spawnParticle(EnumParticleTypes.ITEM_CRACK, vec3d1.x, vec3d1.y, vec3d1.z, 0,  vec3d.x, vec3d.y + 0.05D, vec3d.z, 0.0D, Item.getIdFromItem(stack.getItem()), stack.getMetadata());
             else //Fix the fact that spawning ItemCrack uses TWO arguments.
@@ -1593,15 +1586,15 @@ public abstract class EntityLivingBase extends Entity
      */
     public CombatTracker getCombatTracker()
     {
-        return this.combatTracker;
+        return this._combatTracker;
     }
 
     @Nullable
     public EntityLivingBase getAttackingEntity()
     {
-        if (this.combatTracker.getBestAttacker() != null)
+        if (this._combatTracker.getBestAttacker() != null)
         {
-            return this.combatTracker.getBestAttacker();
+            return this._combatTracker.getBestAttacker();
         }
         else if (this.attackingPlayer != null)
         {
@@ -1929,8 +1922,8 @@ public abstract class EntityLivingBase extends Entity
 
                 for (int[] aint : aint1)
                 {
-                    double d9 = (double)(enumfacing1.getXOffset() * aint[0] + enumfacing.getXOffset() * aint[1]);
-                    double d10 = (double)(enumfacing1.getZOffset() * aint[0] + enumfacing.getZOffset() * aint[1]);
+                    double d9 = (double)(enumfacing1.getFrontOffsetX() * aint[0] + enumfacing.getFrontOffsetX() * aint[1]);
+                    double d10 = (double)(enumfacing1.getFrontOffsetZ() * aint[0] + enumfacing.getFrontOffsetZ() * aint[1]);
                     double d11 = d5 + d9;
                     double d12 = d6 + d10;
                     AxisAlignedBB axisalignedbb1 = axisalignedbb.offset(d9, 0.0D, d10);
@@ -2067,7 +2060,7 @@ public abstract class EntityLivingBase extends Entity
                         float f = this.rotationPitch * 0.017453292F;
                         double d6 = Math.sqrt(vec3d.x * vec3d.x + vec3d.z * vec3d.z);
                         double d8 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
-                        double d1 = vec3d.length();
+                        double d1 = vec3d.lengthVector();
                         float f4 = MathHelper.cos(f);
                         f4 = (float)((double)f4 * (double)f4 * Math.min(1.0D, d1 / 0.4D));
                         this.motionY += -0.08D + (double)f4 * 0.06D;
@@ -2184,7 +2177,7 @@ public abstract class EntityLivingBase extends Entity
                         {
                             blockpos$pooledmutableblockpos.setPos(this.posX, 0.0D, this.posZ);
 
-                            if (!this.world.isRemote || this.world.isBlockLoaded(blockpos$pooledmutableblockpos) && this.world.getChunk(blockpos$pooledmutableblockpos).isLoaded())
+                            if (!this.world.isRemote || this.world.isBlockLoaded(blockpos$pooledmutableblockpos) && this.world.getChunkFromBlockCoords(blockpos$pooledmutableblockpos).isLoaded())
                             {
                                 if (!this.hasNoGravity())
                                 {
@@ -2732,7 +2725,7 @@ public abstract class EntityLivingBase extends Entity
     }
 
     /**
-     * Sets a target for the client to interpolate towards over the next few ticks
+     * Set the position and rotation values directly without any clamping.
      */
     @SideOnly(Side.CLIENT)
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport)
@@ -2910,7 +2903,7 @@ public abstract class EntityLivingBase extends Entity
         {
             PotionEffect effect = iterator.next();
 
-            if (effect.isCurativeItem(curativeItem) && !net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.PotionEvent.PotionRemoveEvent(this, effect)))
+            if (effect.isCurativeItem(curativeItem))
             {
                 onFinishedPotionEffect(effect);
                 iterator.remove();
@@ -2948,7 +2941,6 @@ public abstract class EntityLivingBase extends Entity
         if (this.isHandActive())
         {
             ItemStack itemstack = this.getHeldItem(this.getActiveHand());
-            if (net.minecraftforge.common.ForgeHooks.canContinueUsing(this.activeItemStack, itemstack)) this.activeItemStack = itemstack;
 
             if (itemstack == this.activeItemStack)
             {
@@ -3047,7 +3039,7 @@ public abstract class EntityLivingBase extends Entity
                     Vec3d vec3d1 = new Vec3d(((double)this.rand.nextFloat() - 0.5D) * 0.3D, d0, 0.6D);
                     vec3d1 = vec3d1.rotatePitch(-this.rotationPitch * 0.017453292F);
                     vec3d1 = vec3d1.rotateYaw(-this.rotationYaw * 0.017453292F);
-                    vec3d1 = vec3d1.add(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ);
+                    vec3d1 = vec3d1.addVector(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ);
 
                     if (stack.getHasSubtypes())
                     {
@@ -3264,14 +3256,8 @@ public abstract class EntityLivingBase extends Entity
         return true;
     }
 
-    /**
-     * Called when a record starts or stops playing. Used to make parrots start or stop partying.
-     *  
-     * @param pos The location the record is being played at (usually a jukebox)
-     * @param isPartying True if the record started; false if it stopped.
-     */
     @SideOnly(Side.CLIENT)
-    public void setPartying(BlockPos pos, boolean isPartying)
+    public void setPartying(BlockPos pos, boolean p_191987_2_)
     {
     }
     

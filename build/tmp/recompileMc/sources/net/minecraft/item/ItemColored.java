@@ -36,16 +36,16 @@ public class ItemColored extends ItemBlock
      * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have
      * different names based on their damage or NBT.
      */
-    public String getTranslationKey(ItemStack stack)
+    public String getUnlocalizedName(ItemStack stack)
     {
         if (this.subtypeNames == null)
         {
-            return super.getTranslationKey(stack);
+            return super.getUnlocalizedName(stack);
         }
         else
         {
             int i = stack.getMetadata();
-            return i >= 0 && i < this.subtypeNames.length ? super.getTranslationKey(stack) + "." + this.subtypeNames[i] : super.getTranslationKey(stack);
+            return i >= 0 && i < this.subtypeNames.length ? super.getUnlocalizedName(stack) + "." + this.subtypeNames[i] : super.getUnlocalizedName(stack);
         }
     }
 }

@@ -1,0 +1,9 @@
+#Items
+item.ingot_copper.name=Copper Ingot
+
+#Armours
+item.trainer_hat_white.name=White Trainer Hat
+item.trainer_hat_black.name=Black Trainer Hat
+
+#Creative Tabs
+itemGroup.pwae=Test Items

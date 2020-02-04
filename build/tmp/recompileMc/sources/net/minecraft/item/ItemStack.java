@@ -260,7 +260,7 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
         if (this.capabilities != null)
         {
             NBTTagCompound cnbt = this.capabilities.serializeNBT();
-            if (!cnbt.isEmpty()) nbt.setTag("ForgeCaps", cnbt);
+            if (!cnbt.hasNoTags()) nbt.setTag("ForgeCaps", cnbt);
         }
 
         return nbt;
@@ -577,14 +577,14 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
         }
     }
 
-    public String getTranslationKey()
+    public String getUnlocalizedName()
     {
-        return this.getItem().getTranslationKey(this);
+        return this.getItem().getUnlocalizedName(this);
     }
 
     public String toString()
     {
-        return this.stackSize + "x" + this.getItem().getTranslationKey() + "@" + this.itemDamage;
+        return this.stackSize + "x" + this.getItem().getUnlocalizedName() + "@" + this.itemDamage;
     }
 
     /**
@@ -735,13 +735,13 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
         {
             nbttagcompound.removeTag("Name");
 
-            if (nbttagcompound.isEmpty())
+            if (nbttagcompound.hasNoTags())
             {
                 this.removeSubCompound("display");
             }
         }
 
-        if (this.stackTagCompound != null && this.stackTagCompound.isEmpty())
+        if (this.stackTagCompound != null && this.stackTagCompound.hasNoTags())
         {
             this.stackTagCompound = null;
         }
@@ -851,7 +851,7 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
                 {
                     NBTTagList nbttaglist3 = nbttagcompound1.getTagList("Lore", 8);
 
-                    if (!nbttaglist3.isEmpty())
+                    if (!nbttaglist3.hasNoTags())
                     {
                         for (int l1 = 0; l1 < nbttaglist3.tagCount(); ++l1)
                         {
@@ -929,7 +929,7 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
         {
             NBTTagList nbttaglist1 = this.stackTagCompound.getTagList("CanDestroy", 8);
 
-            if (!nbttaglist1.isEmpty())
+            if (!nbttaglist1.hasNoTags())
             {
                 list.add("");
                 list.add(TextFormatting.GRAY + I18n.translateToLocal("item.canBreak"));
@@ -954,7 +954,7 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
         {
             NBTTagList nbttaglist2 = this.stackTagCompound.getTagList("CanPlaceOn", 8);
 
-            if (!nbttaglist2.isEmpty())
+            if (!nbttaglist2.hasNoTags())
             {
                 list.add("");
                 list.add(TextFormatting.GRAY + I18n.translateToLocal("item.canPlace"));
@@ -1000,7 +1000,6 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
         return this.getItem().hasEffect(this);
     }
 
-    @Deprecated // use Forge version on item
     public EnumRarity getRarity()
     {
         return this.getItem().getRarity(this);
@@ -1050,7 +1049,7 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
     {
         if (this.stackTagCompound != null && this.stackTagCompound.hasKey("ench", 9))
         {
-            return !this.stackTagCompound.getTagList("ench", 10).isEmpty();
+            return !this.stackTagCompound.getTagList("ench", 10).hasNoTags();
         }
         else
         {
@@ -1200,7 +1199,7 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
         {
             NBTTagCompound nbttagcompound = this.writeToNBT(new NBTTagCompound());
             itextcomponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new TextComponentString(nbttagcompound.toString())));
-            itextcomponent.getStyle().setColor(this.getItem().getForgeRarity(this).getColor());
+            itextcomponent.getStyle().setColor(this.getRarity().rarityColor);
         }
 
         return itextcomponent;

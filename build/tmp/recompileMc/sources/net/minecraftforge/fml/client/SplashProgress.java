@@ -95,7 +95,7 @@ public class SplashProgress
     private static final Lock lock = new ReentrantLock(true);
     private static SplashFontRenderer fontRenderer;
 
-    private static final IResourcePack mcPack = Minecraft.getMinecraft().defaultResourcePack;
+    private static final IResourcePack mcPack = Minecraft.getMinecraft().mcDefaultResourcePack;
     private static final IResourcePack fmlPack = createResourcePack(FMLSanityChecker.fmlLocation);
     private static IResourcePack miscPack;
 
@@ -149,7 +149,7 @@ public class SplashProgress
 
     public static void start()
     {
-        File configFile = new File(Minecraft.getMinecraft().gameDir, "config/splash.properties");
+        File configFile = new File(Minecraft.getMinecraft().mcDataDir, "config/splash.properties");
 
         File parent = configFile.getParentFile();
         if (!parent.exists())
@@ -189,7 +189,7 @@ public class SplashProgress
         final ResourceLocation forgeLoc = new ResourceLocation(getString("forgeTexture", "fml:textures/gui/forge.png"));
         final ResourceLocation forgeFallbackLoc = new ResourceLocation("fml:textures/gui/forge.png");
 
-        File miscPackFile = new File(Minecraft.getMinecraft().gameDir, getString("resourcePackPath", "resources"));
+        File miscPackFile = new File(Minecraft.getMinecraft().mcDataDir, getString("resourcePackPath", "resources"));
 
         try (Writer w = new OutputStreamWriter(new FileOutputStream(configFile), StandardCharsets.UTF_8))
         {
@@ -706,7 +706,7 @@ public class SplashProgress
 
     private static boolean disableSplash()
     {
-        File configFile = new File(Minecraft.getMinecraft().gameDir, "config/splash.properties");
+        File configFile = new File(Minecraft.getMinecraft().mcDataDir, "config/splash.properties");
         File parent = configFile.getParentFile();
         if (!parent.exists())
             parent.mkdirs();
@@ -910,7 +910,7 @@ public class SplashProgress
         @Override
         protected IResource getResource(@Nonnull ResourceLocation location) throws IOException
         {
-            DefaultResourcePack pack = Minecraft.getMinecraft().defaultResourcePack;
+            DefaultResourcePack pack = Minecraft.getMinecraft().mcDefaultResourcePack;
             return new SimpleResource(pack.getPackName(), location, pack.getInputStream(location), null, null);
         }
     }

@@ -40,10 +40,6 @@ import net.minecraft.util.ResourceLocation;
 
 public class Blocks
 {
-    /**
-     * During the registration process, contains all blocks that have been registered so far (along with null) to avoid
-     * duplicates (and including null).
-     */
     private static final Set<Block> CACHE;
     public static final Block AIR;
     public static final Block STONE;

@@ -87,7 +87,7 @@ public class RealmsVertexFormat
 
     public int getVertexSize()
     {
-        return this.v.getSize();
+        return this.v.getNextOffset();
     }
 
     public int getOffset(int p_getOffset_1_)

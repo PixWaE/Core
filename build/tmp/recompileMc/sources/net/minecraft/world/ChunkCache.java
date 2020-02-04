@@ -36,7 +36,7 @@ public class ChunkCache implements IBlockAccess
         {
             for (int l = this.chunkZ; l <= j; ++l)
             {
-                this.chunkArray[k - this.chunkX][l - this.chunkZ] = worldIn.getChunk(k, l);
+                this.chunkArray[k - this.chunkX][l - this.chunkZ] = worldIn.getChunkFromChunkCoords(k, l);
             }
         }
 
@@ -70,12 +70,12 @@ public class ChunkCache implements IBlockAccess
     }
 
     @Nullable
-    public TileEntity getTileEntity(BlockPos pos, Chunk.EnumCreateEntityType createType)
+    public TileEntity getTileEntity(BlockPos pos, Chunk.EnumCreateEntityType p_190300_2_)
     {
         int i = (pos.getX() >> 4) - this.chunkX;
         int j = (pos.getZ() >> 4) - this.chunkZ;
         if (!withinBounds(i, j)) return null;
-        return this.chunkArray[i][j].getTileEntity(pos, createType);
+        return this.chunkArray[i][j].getTileEntity(pos, p_190300_2_);
     }
 
     @SideOnly(Side.CLIENT)

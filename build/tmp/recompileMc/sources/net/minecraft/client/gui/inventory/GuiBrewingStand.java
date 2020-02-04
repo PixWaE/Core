@@ -18,11 +18,11 @@ public class GuiBrewingStand extends GuiContainer
     private final InventoryPlayer playerInventory;
     private final IInventory tileBrewingStand;
 
-    public GuiBrewingStand(InventoryPlayer playerInv, IInventory inventoryIn)
+    public GuiBrewingStand(InventoryPlayer playerInv, IInventory p_i45506_2_)
     {
-        super(new ContainerBrewingStand(playerInv, inventoryIn));
+        super(new ContainerBrewingStand(playerInv, p_i45506_2_));
         this.playerInventory = playerInv;
-        this.tileBrewingStand = inventoryIn;
+        this.tileBrewingStand = p_i45506_2_;
     }
 
     /**

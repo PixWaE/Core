@@ -7,10 +7,6 @@ import net.minecraft.util.ResourceLocation;
 
 public class PotionTypes
 {
-    /**
-     * During the registration process, contains all potions that have been registered so far (along with null) to avoid
-     * duplicates (and including null).
-     */
     private static final Set<PotionType> CACHE;
     public static final PotionType EMPTY;
     public static final PotionType WATER;

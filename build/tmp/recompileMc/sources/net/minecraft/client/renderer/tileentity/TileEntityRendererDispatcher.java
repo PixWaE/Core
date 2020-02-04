@@ -130,7 +130,6 @@ public class TileEntityRendererDispatcher
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             }
             BlockPos blockpos = tileentityIn.getPos();
-            if (this.world.isBlockLoaded(blockpos, false)) // Forge: fix MC-123363
             this.render(tileentityIn, (double)blockpos.getX() - staticPlayerX, (double)blockpos.getY() - staticPlayerY, (double)blockpos.getZ() - staticPlayerZ, partialTicks, destroyStage, 1.0F);
         }
     }

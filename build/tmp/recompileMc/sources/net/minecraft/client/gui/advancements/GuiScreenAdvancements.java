@@ -271,19 +271,19 @@ public class GuiScreenAdvancements extends GuiScreen implements ClientAdvancemen
     {
     }
 
-    public void onUpdateAdvancementProgress(Advancement advancementIn, AdvancementProgress progress)
+    public void onUpdateAdvancementProgress(Advancement p_191933_1_, AdvancementProgress p_191933_2_)
     {
-        GuiAdvancement guiadvancement = this.getAdvancementGui(advancementIn);
+        GuiAdvancement guiadvancement = this.getAdvancementGui(p_191933_1_);
 
         if (guiadvancement != null)
         {
-            guiadvancement.setAdvancementProgress(progress);
+            guiadvancement.getAdvancementProgress(p_191933_2_);
         }
     }
 
-    public void setSelectedTab(@Nullable Advancement advancementIn)
+    public void setSelectedTab(@Nullable Advancement p_193982_1_)
     {
-        this.selectedTab = this.tabs.get(advancementIn);
+        this.selectedTab = this.tabs.get(p_193982_1_);
     }
 
     public void advancementsCleared()

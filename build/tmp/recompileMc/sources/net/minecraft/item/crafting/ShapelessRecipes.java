@@ -31,18 +31,11 @@ public class ShapelessRecipes extends net.minecraftforge.registries.IForgeRegist
         this.isSimple = simple;
     }
 
-    /**
-     * Recipes with equal group are combined into one button in the recipe book
-     */
     public String getGroup()
     {
         return this.group;
     }
 
-    /**
-     * Get the result of this recipe, usually for display purposes (e.g. recipe book). If your recipe has more than one
-     * possible result (e.g. it's dynamic and depends on its inputs), then return an empty stack.
-     */
     public ItemStack getRecipeOutput()
     {
         return this.recipeOutput;

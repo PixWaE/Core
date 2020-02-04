@@ -29,9 +29,6 @@ public class Teleporter implements net.minecraftforge.common.util.ITeleporter
         this.random = new Random(worldIn.getSeed());
     }
 
-    /**
-     * Finds a portal near the entity's current coordinates and places the entity there, creating it if necessary.
-     */
     public void placeInPortal(Entity entityIn, float rotationYaw)
     {
         if (this.world.provider.getDimensionType().getId() != 1)

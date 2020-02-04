@@ -425,9 +425,9 @@ public class BlockStateContainer
                 return this.block.getStrongPower(this, blockAccess, pos, side);
             }
 
-            public EnumPushReaction getPushReaction()
+            public EnumPushReaction getMobilityFlag()
             {
-                return this.block.getPushReaction(this);
+                return this.block.getMobilityFlag(this);
             }
 
             public IBlockState getActualState(IBlockAccess blockAccess, BlockPos pos)
@@ -502,9 +502,6 @@ public class BlockStateContainer
              * Called when a neighboring block was changed and marks that this state should perform any checks during a
              * neighbor change. Cases may include when redstone power is updated, cactus blocks popping off due to a
              * neighboring solid block, etc.
-             *  
-             * @param blockIn The neighboring block causing this block update
-             * @param fromPos The neighboring position causing this block update
              */
             public void neighborChanged(World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos)
             {

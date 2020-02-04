@@ -35,7 +35,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -123,7 +122,6 @@ public class ForgeModContainer extends DummyModContainer implements WorldAccessC
     public static boolean forgeCloudsEnabled = true;
     public static boolean disableStairSlabCulling = false; // Also known as the "DontCullStairsBecauseIUseACrappyTexturePackThatBreaksBasicBlockShapesSoICantTrustBasicBlockCulling" flag
     public static boolean alwaysSetupTerrainOffThread = false; // In RenderGlobal.setupTerrain, always force the chunk render updates to be queued to the thread
-    public static boolean allowEmissiveItems; // see RenderItem#renderModel(IBakedModel, int, ItemStack)
     public static int dimensionUnloadQueueDelay = 0;
     public static boolean logCascadingWorldGeneration = true; // see Chunk#logCascadingWorldGeneration()
     public static boolean fixVanillaCascading = false; // There are various places in vanilla that cause cascading worldgen. Enabling this WILL change where blocks are placed to prevent this.
@@ -348,12 +346,6 @@ public class ForgeModContainer extends DummyModContainer implements WorldAccessC
         alwaysSetupTerrainOffThread = prop.getBoolean(false);
         prop.setLanguageKey("forge.configgui.alwaysSetupTerrainOffThread");
         propOrder.add(prop.getName());
-        
-        prop = config.get(Configuration.CATEGORY_CLIENT, "allowEmissiveItems", true,
-                "Allow item rendering to detect emissive quads and draw them properly. This allows glowing blocks to look the same in item form, but incurs a very slight performance hit.");
-        allowEmissiveItems = prop.getBoolean(true);
-        prop.setLanguageKey("forge.configgui.allowEmissiveItems");
-        propOrder.add(prop.getName());
 
         prop = config.get(Configuration.CATEGORY_CLIENT, "biomeSkyBlendRange", new int[] { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34 });
         prop.setComment("Control the range of sky blending for colored skies in biomes.");
@@ -440,16 +432,9 @@ public class ForgeModContainer extends DummyModContainer implements WorldAccessC
     public void modConstruction(FMLConstructionEvent evt)
     {
         InputStream is = ForgeModContainer.class.getResourceAsStream("/META-INF/vanilla_annotations.json");
-        try
-        {
-            if (is != null)
-                JsonAnnotationLoader.loadJson(is, null, evt.getASMHarvestedData());
-            log.debug("Loading Vanilla annotations: " + is);
-        }
-        finally
-        {
-            IOUtils.closeQuietly(is);
-        }
+        if (is != null)
+            JsonAnnotationLoader.loadJson(is, null, evt.getASMHarvestedData());
+        log.debug("Loading Vanilla annotations: " + is);
 
         List<String> all = Lists.newArrayList();
         for (ASMData asm : evt.getASMHarvestedData().getAll(ICrashReportDetail.class.getName().replace('.', '/')))
@@ -513,7 +498,7 @@ public class ForgeModContainer extends DummyModContainer implements WorldAccessC
         if(FluidRegistry.isUniversalBucketEnabled())
         {
             universalBucket = new UniversalBucket();
-            universalBucket.setTranslationKey("forge.bucketFilled");
+            universalBucket.setUnlocalizedName("forge.bucketFilled");
             event.getRegistry().register(universalBucket.setRegistryName(ForgeVersion.MOD_ID, "bucketFilled"));
             MinecraftForge.EVENT_BUS.register(universalBucket);
         }

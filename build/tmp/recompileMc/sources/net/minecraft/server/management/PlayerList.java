@@ -76,7 +76,7 @@ public abstract class PlayerList
     private static final Logger LOGGER = LogManager.getLogger();
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
     /** Reference to the MinecraftServer object. */
-    private final MinecraftServer server;
+    private final MinecraftServer mcServer;
     /** A list of player entities that exist on this server. */
     private final List<EntityPlayerMP> playerEntityList = Lists.<EntityPlayerMP>newArrayList();
     /** A map containing the key-value pairs for UUIDs and their EntityPlayerMP objects. */
@@ -95,7 +95,6 @@ public abstract class PlayerList
     private boolean whiteListEnforced;
     /** The maximum number of players that can be connected at a time. */
     protected int maxPlayers;
-    /** View distance in chunks. */
     private int viewDistance;
     private GameType gameType;
     /** True if all players are allowed to use commands (cheats). */
@@ -111,7 +110,7 @@ public abstract class PlayerList
         this.whiteListedPlayers = new UserListWhitelist(FILE_WHITELIST);
         this.playerStatFiles = Maps.<UUID, StatisticsManagerServer>newHashMap();
         this.advancements = Maps.<UUID, PlayerAdvancements>newHashMap();
-        this.server = server;
+        this.mcServer = server;
         this.bannedPlayers.setLanServer(false);
         this.bannedIPs.setLanServer(false);
         this.maxPlayers = 8;
@@ -120,18 +119,18 @@ public abstract class PlayerList
     public void initializeConnectionToPlayer(NetworkManager netManager, EntityPlayerMP playerIn, NetHandlerPlayServer nethandlerplayserver)
     {
         GameProfile gameprofile = playerIn.getGameProfile();
-        PlayerProfileCache playerprofilecache = this.server.getPlayerProfileCache();
+        PlayerProfileCache playerprofilecache = this.mcServer.getPlayerProfileCache();
         GameProfile gameprofile1 = playerprofilecache.getProfileByUUID(gameprofile.getId());
         String s = gameprofile1 == null ? gameprofile.getName() : gameprofile1.getName();
         playerprofilecache.addEntry(gameprofile);
         NBTTagCompound nbttagcompound = this.readPlayerDataFromFile(playerIn);
-        playerIn.setWorld(this.server.getWorld(playerIn.dimension));
+        playerIn.setWorld(this.mcServer.getWorld(playerIn.dimension));
 
-        World playerWorld = this.server.getWorld(playerIn.dimension);
+        World playerWorld = this.mcServer.getWorld(playerIn.dimension);
         if (playerWorld == null)
         {
             playerIn.dimension = 0;
-            playerWorld = this.server.getWorld(0);
+            playerWorld = this.mcServer.getWorld(0);
             BlockPos spawnPoint = playerWorld.provider.getRandomizedSpawnPoint();
             playerIn.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
         }
@@ -146,7 +145,7 @@ public abstract class PlayerList
         }
 
         LOGGER.info("{}[{}] logged in with entity id {} at ({}, {}, {})", playerIn.getName(), s1, Integer.valueOf(playerIn.getEntityId()), Double.valueOf(playerIn.posX), Double.valueOf(playerIn.posY), Double.valueOf(playerIn.posZ));
-        WorldServer worldserver = this.server.getWorld(playerIn.dimension);
+        WorldServer worldserver = this.mcServer.getWorld(playerIn.dimension);
         WorldInfo worldinfo = worldserver.getWorldInfo();
         this.setPlayerGameTypeBasedOnOther(playerIn, (EntityPlayerMP)null, worldserver);
         playerIn.connection = nethandlerplayserver;
@@ -160,7 +159,7 @@ public abstract class PlayerList
         playerIn.getStatFile().markAllDirty();
         playerIn.getRecipeBook().init(playerIn);
         this.sendScoreboard((ServerScoreboard)worldserver.getScoreboard(), playerIn);
-        this.server.refreshStatusNextTick();
+        this.mcServer.refreshStatusNextTick();
         TextComponentTranslation textcomponenttranslation;
 
         if (playerIn.getName().equalsIgnoreCase(s))
@@ -178,9 +177,9 @@ public abstract class PlayerList
         nethandlerplayserver.setPlayerLocation(playerIn.posX, playerIn.posY, playerIn.posZ, playerIn.rotationYaw, playerIn.rotationPitch);
         this.updateTimeAndWeatherForPlayer(playerIn, worldserver);
 
-        if (!this.server.getResourcePackUrl().isEmpty())
+        if (!this.mcServer.getResourcePackUrl().isEmpty())
         {
-            playerIn.loadResourcePack(this.server.getResourcePackUrl(), this.server.getResourcePackHash());
+            playerIn.loadResourcePack(this.mcServer.getResourcePackUrl(), this.mcServer.getResourcePackHash());
         }
 
         for (PotionEffect potioneffect : playerIn.getActivePotionEffects())
@@ -315,9 +314,6 @@ public abstract class PlayerList
         }
     }
 
-    /**
-     * Gets the "max track distance" for entities based on the current view distance.
-     */
     public int getEntityViewDistance()
     {
         return PlayerChunkMap.getFurthestViewableBlock(this.getViewDistance());
@@ -329,10 +325,10 @@ public abstract class PlayerList
     @Nullable
     public NBTTagCompound readPlayerDataFromFile(EntityPlayerMP playerIn)
     {
-        NBTTagCompound nbttagcompound = this.server.worlds[0].getWorldInfo().getPlayerNBTTagCompound();
+        NBTTagCompound nbttagcompound = this.mcServer.worlds[0].getWorldInfo().getPlayerNBTTagCompound();
         NBTTagCompound nbttagcompound1;
 
-        if (playerIn.getName().equals(this.server.getServerOwner()) && nbttagcompound != null)
+        if (playerIn.getName().equals(this.mcServer.getServerOwner()) && nbttagcompound != null)
         {
             nbttagcompound1 = nbttagcompound;
             playerIn.readFromNBT(nbttagcompound);
@@ -350,8 +346,8 @@ public abstract class PlayerList
     public NBTTagCompound getPlayerNBT(EntityPlayerMP player)
     {
         // Hacky method to allow loading the NBT for a player prior to login
-        NBTTagCompound nbttagcompound = this.server.worlds[0].getWorldInfo().getPlayerNBTTagCompound();
-        if (player.getName().equals(this.server.getServerOwner()) && nbttagcompound != null)
+        NBTTagCompound nbttagcompound = this.mcServer.worlds[0].getWorldInfo().getPlayerNBTTagCompound();
+        if (player.getName().equals(this.mcServer.getServerOwner()) && nbttagcompound != null)
         {
             return nbttagcompound;
         }
@@ -392,7 +388,7 @@ public abstract class PlayerList
         this.playerEntityList.add(playerIn);
         this.uuidToPlayerMap.put(playerIn.getUniqueID(), playerIn);
         this.sendPacketToAllPlayers(new SPacketPlayerListItem(SPacketPlayerListItem.Action.ADD_PLAYER, new EntityPlayerMP[] {playerIn}));
-        WorldServer worldserver = this.server.getWorld(playerIn.dimension);
+        WorldServer worldserver = this.mcServer.getWorld(playerIn.dimension);
 
         for (int i = 0; i < this.playerEntityList.size(); ++i)
         {
@@ -437,7 +433,7 @@ public abstract class PlayerList
                     worldserver.removeEntityDangerously(entity1);
                 }
 
-                worldserver.getChunk(playerIn.chunkCoordX, playerIn.chunkCoordZ).markDirty();
+                worldserver.getChunkFromChunkCoords(playerIn.chunkCoordX, playerIn.chunkCoordZ).markDirty();
             }
         }
         net.minecraftforge.common.chunkio.ChunkIOExecutor.adjustPoolSize(this.getCurrentPlayerCount());
@@ -530,16 +526,16 @@ public abstract class PlayerList
 
         PlayerInteractionManager playerinteractionmanager;
 
-        if (this.server.isDemo())
+        if (this.mcServer.isDemo())
         {
-            playerinteractionmanager = new DemoPlayerInteractionManager(this.server.getWorld(0));
+            playerinteractionmanager = new DemoPlayerInteractionManager(this.mcServer.getWorld(0));
         }
         else
         {
-            playerinteractionmanager = new PlayerInteractionManager(this.server.getWorld(0));
+            playerinteractionmanager = new PlayerInteractionManager(this.mcServer.getWorld(0));
         }
 
-        return new EntityPlayerMP(this.server, this.server.getWorld(0), profile, playerinteractionmanager);
+        return new EntityPlayerMP(this.mcServer, this.mcServer.getWorld(0), profile, playerinteractionmanager);
     }
 
     /**
@@ -548,7 +544,7 @@ public abstract class PlayerList
      */
     public EntityPlayerMP recreatePlayerEntity(EntityPlayerMP playerIn, int dimension, boolean conqueredEnd)
     {
-        World world = server.getWorld(dimension);
+        World world = mcServer.getWorld(dimension);
         if (world == null)
         {
             dimension = playerIn.getSpawnDimension();
@@ -557,28 +553,28 @@ public abstract class PlayerList
         {
             dimension = world.provider.getRespawnDimension(playerIn);
         }
-        if (server.getWorld(dimension) == null) dimension = 0;
+        if (mcServer.getWorld(dimension) == null) dimension = 0;
 
         playerIn.getServerWorld().getEntityTracker().removePlayerFromTrackers(playerIn);
         playerIn.getServerWorld().getEntityTracker().untrack(playerIn);
         playerIn.getServerWorld().getPlayerChunkMap().removePlayer(playerIn);
         this.playerEntityList.remove(playerIn);
-        this.server.getWorld(playerIn.dimension).removeEntityDangerously(playerIn);
+        this.mcServer.getWorld(playerIn.dimension).removeEntityDangerously(playerIn);
         BlockPos blockpos = playerIn.getBedLocation(dimension);
         boolean flag = playerIn.isSpawnForced(dimension);
         playerIn.dimension = dimension;
         PlayerInteractionManager playerinteractionmanager;
 
-        if (this.server.isDemo())
+        if (this.mcServer.isDemo())
         {
-            playerinteractionmanager = new DemoPlayerInteractionManager(this.server.getWorld(playerIn.dimension));
+            playerinteractionmanager = new DemoPlayerInteractionManager(this.mcServer.getWorld(playerIn.dimension));
         }
         else
         {
-            playerinteractionmanager = new PlayerInteractionManager(this.server.getWorld(playerIn.dimension));
+            playerinteractionmanager = new PlayerInteractionManager(this.mcServer.getWorld(playerIn.dimension));
         }
 
-        EntityPlayerMP entityplayermp = new EntityPlayerMP(this.server, this.server.getWorld(playerIn.dimension), playerIn.getGameProfile(), playerinteractionmanager);
+        EntityPlayerMP entityplayermp = new EntityPlayerMP(this.mcServer, this.mcServer.getWorld(playerIn.dimension), playerIn.getGameProfile(), playerinteractionmanager);
         entityplayermp.connection = playerIn.connection;
         entityplayermp.copyFrom(playerIn, conqueredEnd);
         entityplayermp.dimension = dimension;
@@ -591,12 +587,12 @@ public abstract class PlayerList
             entityplayermp.addTag(s);
         }
 
-        WorldServer worldserver = this.server.getWorld(playerIn.dimension);
+        WorldServer worldserver = this.mcServer.getWorld(playerIn.dimension);
         this.setPlayerGameTypeBasedOnOther(entityplayermp, playerIn, worldserver);
 
         if (blockpos != null)
         {
-            BlockPos blockpos1 = EntityPlayer.getBedSpawnLocation(this.server.getWorld(playerIn.dimension), blockpos, flag);
+            BlockPos blockpos1 = EntityPlayer.getBedSpawnLocation(this.mcServer.getWorld(playerIn.dimension), blockpos, flag);
 
             if (blockpos1 != null)
             {
@@ -637,14 +633,14 @@ public abstract class PlayerList
     {
         GameProfile gameprofile = player.getGameProfile();
         int i = this.canSendCommands(gameprofile) ? this.ops.getPermissionLevel(gameprofile) : 0;
-        i = this.server.isSinglePlayer() && this.server.worlds[0].getWorldInfo().areCommandsAllowed() ? 4 : i;
+        i = this.mcServer.isSinglePlayer() && this.mcServer.worlds[0].getWorldInfo().areCommandsAllowed() ? 4 : i;
         i = this.commandsAllowedForAll ? 4 : i;
         this.sendPlayerPermissionLevel(player, i);
     }
 
     public void changePlayerDimension(EntityPlayerMP player, int dimensionIn)
     {
-        transferPlayerToDimension(player, dimensionIn, server.getWorld(dimensionIn).getDefaultTeleporter());
+        transferPlayerToDimension(player, dimensionIn, mcServer.getWorld(dimensionIn).getDefaultTeleporter());
     }
 
     // TODO: Remove (1.13)
@@ -656,10 +652,10 @@ public abstract class PlayerList
     public void transferPlayerToDimension(EntityPlayerMP player, int dimensionIn, net.minecraftforge.common.util.ITeleporter teleporter)
     {
         int i = player.dimension;
-        WorldServer worldserver = this.server.getWorld(player.dimension);
+        WorldServer worldserver = this.mcServer.getWorld(player.dimension);
         player.dimension = dimensionIn;
-        WorldServer worldserver1 = this.server.getWorld(player.dimension);
-        player.connection.sendPacket(new SPacketRespawn(player.dimension, worldserver1.getDifficulty(), worldserver1.getWorldInfo().getTerrainType(), player.interactionManager.getGameType())); // Forge: Use new dimensions information
+        WorldServer worldserver1 = this.mcServer.getWorld(player.dimension);
+        player.connection.sendPacket(new SPacketRespawn(player.dimension, worldserver1.getDifficulty(), worldserver1.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
         this.updatePermissionLevel(player);
         worldserver.removeEntityDangerously(player);
         player.isDead = false;
@@ -912,8 +908,8 @@ public abstract class PlayerList
 
     public void addOp(GameProfile profile)
     {
-        int i = this.server.getOpPermissionLevel();
-        this.ops.addEntry(new UserListOpsEntry(profile, this.server.getOpPermissionLevel(), this.ops.bypassesPlayerLimit(profile)));
+        int i = this.mcServer.getOpPermissionLevel();
+        this.ops.addEntry(new UserListOpsEntry(profile, this.mcServer.getOpPermissionLevel(), this.ops.bypassesPlayerLimit(profile)));
         this.sendPlayerPermissionLevel(this.getPlayerByUUID(profile.getId()), i);
     }
 
@@ -953,7 +949,7 @@ public abstract class PlayerList
 
     public boolean canSendCommands(GameProfile profile)
     {
-        return this.ops.hasEntry(profile) || this.server.isSinglePlayer() && this.server.worlds[0].getWorldInfo().areCommandsAllowed() && this.server.getServerOwner().equalsIgnoreCase(profile.getName()) || this.commandsAllowedForAll;
+        return this.ops.hasEntry(profile) || this.mcServer.isSinglePlayer() && this.mcServer.worlds[0].getWorldInfo().areCommandsAllowed() && this.mcServer.getServerOwner().equalsIgnoreCase(profile.getName()) || this.commandsAllowedForAll;
     }
 
     @Nullable
@@ -1044,7 +1040,7 @@ public abstract class PlayerList
      */
     public void updateTimeAndWeatherForPlayer(EntityPlayerMP playerIn, WorldServer worldIn)
     {
-        WorldBorder worldborder = this.server.worlds[0].getWorldBorder();
+        WorldBorder worldborder = this.mcServer.worlds[0].getWorldBorder();
         playerIn.connection.sendPacket(new SPacketWorldBorder(worldborder, SPacketWorldBorder.Action.INITIALIZE));
         playerIn.connection.sendPacket(new SPacketTimeUpdate(worldIn.getTotalWorldTime(), worldIn.getWorldTime(), worldIn.getGameRules().getBoolean("doDaylightCycle")));
         BlockPos blockpos = worldIn.getSpawnPoint();
@@ -1089,7 +1085,7 @@ public abstract class PlayerList
      */
     public String[] getAvailablePlayerDat()
     {
-        return this.server.worlds[0].getSaveHandler().getPlayerNBTManager().getAvailablePlayerDat();
+        return this.mcServer.worlds[0].getSaveHandler().getPlayerNBTManager().getAvailablePlayerDat();
     }
 
     public void setWhiteListEnabled(boolean whitelistEnabled)
@@ -1113,7 +1109,7 @@ public abstract class PlayerList
     }
 
     /**
-     * Gets the view distance, in chunks.
+     * Gets the View Distance.
      */
     public int getViewDistance()
     {
@@ -1122,7 +1118,7 @@ public abstract class PlayerList
 
     public MinecraftServer getServerInstance()
     {
-        return this.server;
+        return this.mcServer;
     }
 
     /**
@@ -1175,7 +1171,7 @@ public abstract class PlayerList
 
     public void sendMessage(ITextComponent component, boolean isSystem)
     {
-        this.server.sendMessage(component);
+        this.mcServer.sendMessage(component);
         ChatType chattype = isSystem ? ChatType.SYSTEM : ChatType.CHAT;
         this.sendPacketToAllPlayers(new SPacketChat(component, chattype));
     }
@@ -1195,7 +1191,7 @@ public abstract class PlayerList
 
         if (statisticsmanagerserver == null)
         {
-            File file1 = new File(this.server.getWorld(0).getSaveHandler().getWorldDirectory(), "stats");
+            File file1 = new File(this.mcServer.getWorld(0).getSaveHandler().getWorldDirectory(), "stats");
             File file2 = new File(file1, uuid + ".json");
 
             if (!file2.exists())
@@ -1208,7 +1204,7 @@ public abstract class PlayerList
                 }
             }
 
-            statisticsmanagerserver = new StatisticsManagerServer(this.server, file2);
+            statisticsmanagerserver = new StatisticsManagerServer(this.mcServer, file2);
             statisticsmanagerserver.readStatFile();
             this.playerStatFiles.put(uuid, statisticsmanagerserver);
         }
@@ -1223,9 +1219,9 @@ public abstract class PlayerList
 
         if (playeradvancements == null)
         {
-            File file1 = new File(this.server.getWorld(0).getSaveHandler().getWorldDirectory(), "advancements");
+            File file1 = new File(this.mcServer.getWorld(0).getSaveHandler().getWorldDirectory(), "advancements");
             File file2 = new File(file1, uuid + ".json");
-            playeradvancements = new PlayerAdvancements(this.server, file2, p_192054_1_);
+            playeradvancements = new PlayerAdvancements(this.mcServer, file2, p_192054_1_);
             this.advancements.put(uuid, playeradvancements);
         }
 
@@ -1233,17 +1229,13 @@ public abstract class PlayerList
         return playeradvancements;
     }
 
-    /**
-     * Sets the view distance used on the server. For the dedicated server, this is the <code>view-distance</code> value
-     * in server.properties. For the integrated server, this is the host's render distance (which may change).
-     */
     public void setViewDistance(int distance)
     {
         this.viewDistance = distance;
 
-        if (this.server.worlds != null)
+        if (this.mcServer.worlds != null)
         {
-            for (WorldServer worldserver : this.server.worlds)
+            for (WorldServer worldserver : this.mcServer.worlds)
             {
                 if (worldserver != null)
                 {

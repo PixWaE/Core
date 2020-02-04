@@ -146,7 +146,7 @@ class NamespacedDefaultedWrapper<V extends IForgeRegistryEntry<V>> extends Regis
     public V getRandomObject(Random random)
     {
         Collection<V> values = this.delegate.getValuesCollection();
-        return values.stream().skip(random.nextInt(values.size())).findFirst().orElse(this.delegate.getDefault());
+        return values.stream().skip(random.nextInt(values.size())).findFirst().orElse(null);
     }
 
     //internal

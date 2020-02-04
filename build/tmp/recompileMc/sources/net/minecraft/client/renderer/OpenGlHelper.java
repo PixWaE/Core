@@ -874,21 +874,21 @@ public class OpenGlHelper
     /**
      * Sets the current coordinates of the given lightmap texture
      */
-    public static void setLightmapTextureCoords(int target, float x, float y)
+    public static void setLightmapTextureCoords(int target, float p_77475_1_, float t)
     {
         if (arbMultitexture)
         {
-            ARBMultitexture.glMultiTexCoord2fARB(target, x, y);
+            ARBMultitexture.glMultiTexCoord2fARB(target, p_77475_1_, t);
         }
         else
         {
-            GL13.glMultiTexCoord2f(target, x, y);
+            GL13.glMultiTexCoord2f(target, p_77475_1_, t);
         }
 
         if (target == lightmapTexUnit)
         {
-            lastBrightnessX = x;
-            lastBrightnessY = y;
+            lastBrightnessX = p_77475_1_;
+            lastBrightnessY = t;
         }
     }
 

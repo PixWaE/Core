@@ -1257,9 +1257,9 @@ public class EntityPlayerSP extends AbstractClientPlayer
                                 Vec3d vec3d4 = vec3d1.add(vec3d12.scale((double)f8));
                                 float f9 = this.width;
                                 float f10 = this.height;
-                                AxisAlignedBB axisalignedbb = (new AxisAlignedBB(vec3d, vec3d4.add(0.0D, (double)f10, 0.0D))).grow((double)f9, 0.0D, (double)f9);
-                                Vec3d lvt_19_1_ = vec3d.add(0.0D, 0.5099999904632568D, 0.0D);
-                                vec3d4 = vec3d4.add(0.0D, 0.5099999904632568D, 0.0D);
+                                AxisAlignedBB axisalignedbb = (new AxisAlignedBB(vec3d, vec3d4.addVector(0.0D, (double)f10, 0.0D))).grow((double)f9, 0.0D, (double)f9);
+                                Vec3d lvt_19_1_ = vec3d.addVector(0.0D, 0.5099999904632568D, 0.0D);
+                                vec3d4 = vec3d4.addVector(0.0D, 0.5099999904632568D, 0.0D);
                                 Vec3d vec3d5 = vec3d12.crossProduct(new Vec3d(0.0D, 1.0D, 0.0D));
                                 Vec3d vec3d6 = vec3d5.scale((double)(f9 * 0.5F));
                                 Vec3d vec3d7 = lvt_19_1_.subtract(vec3d6);

@@ -148,9 +148,9 @@ public class Particle
         return this.particleBlue;
     }
 
-    public void setMaxAge(int particleLifeTime)
+    public void setMaxAge(int p_187114_1_)
     {
-        this.particleMaxAge = particleLifeTime;
+        this.particleMaxAge = p_187114_1_;
     }
 
     public void onUpdate()
@@ -285,25 +285,25 @@ public class Particle
         this.isExpired = true;
     }
 
-    protected void setSize(float particleWidth, float particleHeight)
+    protected void setSize(float p_187115_1_, float p_187115_2_)
     {
-        if (particleWidth != this.width || particleHeight != this.height)
+        if (p_187115_1_ != this.width || p_187115_2_ != this.height)
         {
-            this.width = particleWidth;
-            this.height = particleHeight;
+            this.width = p_187115_1_;
+            this.height = p_187115_2_;
             // FORGE: Fix MC-12269 - Glitchy movement when setSize is called without setPosition
             setPosition(posX, posY, posZ);
         }
     }
 
-    public void setPosition(double x, double y, double z)
+    public void setPosition(double p_187109_1_, double p_187109_3_, double p_187109_5_)
     {
-        this.posX = x;
-        this.posY = y;
-        this.posZ = z;
+        this.posX = p_187109_1_;
+        this.posY = p_187109_3_;
+        this.posZ = p_187109_5_;
         float f = this.width / 2.0F;
         float f1 = this.height;
-        this.setBoundingBox(new AxisAlignedBB(x - (double)f, y, z - (double)f, x + (double)f, y + (double)f1, z + (double)f));
+        this.setBoundingBox(new AxisAlignedBB(p_187109_1_ - (double)f, p_187109_3_, p_187109_5_ - (double)f, p_187109_1_ + (double)f, p_187109_3_ + (double)f1, p_187109_5_ + (double)f));
     }
 
     public void move(double x, double y, double z)
@@ -364,7 +364,7 @@ public class Particle
         this.posZ = (axisalignedbb.minZ + axisalignedbb.maxZ) / 2.0D;
     }
 
-    public int getBrightnessForRender(float partialTick)
+    public int getBrightnessForRender(float p_189214_1_)
     {
         BlockPos blockpos = new BlockPos(this.posX, this.posY, this.posZ);
         return this.world.isBlockLoaded(blockpos) ? this.world.getCombinedLight(blockpos, 0) : 0;

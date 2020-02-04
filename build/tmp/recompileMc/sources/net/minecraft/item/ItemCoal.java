@@ -16,7 +16,7 @@ public class ItemCoal extends Item
      * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have
      * different names based on their damage or NBT.
      */
-    public String getTranslationKey(ItemStack stack)
+    public String getUnlocalizedName(ItemStack stack)
     {
         return stack.getMetadata() == 1 ? "item.charcoal" : "item.coal";
     }

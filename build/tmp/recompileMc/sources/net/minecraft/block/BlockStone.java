@@ -33,13 +33,11 @@ public class BlockStone extends Block
      */
     public String getLocalizedName()
     {
-        return I18n.translateToLocal(this.getTranslationKey() + "." + BlockStone.EnumType.STONE.getTranslationKey() + ".name");
+        return I18n.translateToLocal(this.getUnlocalizedName() + "." + BlockStone.EnumType.STONE.getUnlocalizedName() + ".name");
     }
 
     /**
      * Get the MapColor for this Block and the given BlockState
-     * @deprecated call via {@link IBlockState#getMapColor(IBlockAccess,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
      */
     public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
@@ -111,7 +109,7 @@ public class BlockStone extends Block
         private final int meta;
         /** The EnumType's name. */
         private final String name;
-        private final String translationKey;
+        private final String unlocalizedName;
         private final MapColor mapColor;
         private final boolean isNatural;
 
@@ -124,7 +122,7 @@ public class BlockStone extends Block
         {
             this.meta = p_i46384_3_;
             this.name = p_i46384_5_;
-            this.translationKey = p_i46384_6_;
+            this.unlocalizedName = p_i46384_6_;
             this.mapColor = p_i46384_4_;
             this.isNatural = p_i46384_7_;
         }
@@ -165,9 +163,9 @@ public class BlockStone extends Block
             return this.name;
         }
 
-        public String getTranslationKey()
+        public String getUnlocalizedName()
         {
-            return this.translationKey;
+            return this.unlocalizedName;
         }
 
         public boolean isNatural()
