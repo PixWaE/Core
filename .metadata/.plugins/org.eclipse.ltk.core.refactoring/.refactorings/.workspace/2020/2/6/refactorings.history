@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Delete resource &apos;gradle&apos;" deleteContents="false" description="Delete resource &apos;gradle&apos;" element1="/gradle" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1580807130051"/>
-</session>
