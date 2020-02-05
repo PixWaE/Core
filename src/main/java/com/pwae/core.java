@@ -1,15 +1,19 @@
 package com.pwae;
 
+import com.pwae.Blocks.ModBlocks;
+import com.pwae.Items.ModItems;
+import com.pwae.Proxy.ClientProxy;
+import com.pwae.Proxy.CommonProxy;
+import com.pwae.Tabs.BlocksTab;
+import com.pwae.Tabs.CosmeticsTab;
+import com.pwae.Tabs.ItemsTab;
+import com.pwae.Tabs.TempTab;
 import org.apache.logging.log4j.Logger;
-
-import com.pwae.ModItems;
 
 import org.apache.logging.log4j.LogManager;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
-import net.minecraft.creativetab.CreativeTabs;
-import com.pwae.PlayerEvents;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -22,28 +26,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.multiplayer.ServerList;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
 
 @Mod(modid = core.MODID, name = core.NAME, version = core.VERSION, acceptedMinecraftVersions = core.MC_VERSION)
@@ -83,22 +67,34 @@ public class core {
         
 	}
 	
-	@SidedProxy(serverSide = "com.pwae.CommonProxy", clientSide = "com.pwae.ClientProxy")
+	@SidedProxy(serverSide = "com.pwae.Proxy.CommonProxy", clientSide = "com.pwae.Proxy.ClientProxy")
 	public static CommonProxy proxy;
 	
 	@Mod.EventBusSubscriber
 	public static class RegistrationHandler {
-		
+
 		@SubscribeEvent
 		public static void registerItems(RegistryEvent.Register<Item> event) {
 			ModItems.register(event.getRegistry());
+			ModBlocks.registerItemBlocks(event.getRegistry());
 		}
+
 		@SubscribeEvent
 		public static void registerItems(ModelRegistryEvent event) {
 			ModItems.registerModels();
 		}
+
+		@SubscribeEvent
+		public static void registerModels(ModelRegistryEvent event) {
+			ModItems.registerModels();
+			ModBlocks.registerModels();
+		}
 	}
-	public static final PWaETab creativeTab = new PWaETab();
+
+	public static final com.pwae.Tabs.TempTab TempTab = new TempTab();
+	public static final BlocksTab BlocksTab = new BlocksTab();
+	public static final ItemsTab ItemsTab = new ItemsTab();
+	public static final com.pwae.Tabs.CosmeticsTab CosmeticsTab = new CosmeticsTab();
 	public static final ItemArmor.ArmorMaterial trainerHatMaterial = EnumHelper.addArmorMaterial("COPPER", MODID + ":copper", 15, new int[]{2, 5, 6, 2}, 9, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 0.0F);
 
 }

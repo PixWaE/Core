@@ -6,4 +6,7 @@ item.trainer_hat_white.name=White Trainer Hat
 item.trainer_hat_black.name=Black Trainer Hat
 
 #Creative Tabs
-itemGroup.pwae=Test Items
+itemGroup.temptab=PWaE Test
+itemGroup.blockstab=PWaE Blocks
+itemGroup.itemstab=PWaE Items
+itemGroup.cosmeticstab=PWaE Cosmetics
