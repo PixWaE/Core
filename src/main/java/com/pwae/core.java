@@ -1,13 +1,13 @@
 package com.pwae;
 
-import com.pwae.Blocks.ModBlocks;
-import com.pwae.Items.ModItems;
-import com.pwae.Proxy.ClientProxy;
-import com.pwae.Proxy.CommonProxy;
-import com.pwae.Tabs.BlocksTab;
-import com.pwae.Tabs.CosmeticsTab;
-import com.pwae.Tabs.ItemsTab;
-import com.pwae.Tabs.TempTab;
+import com.pwae.blocks.ModBlocks;
+import com.pwae.items.ModItems;
+import com.pwae.proxy.ClientProxy;
+import com.pwae.proxy.CommonProxy;
+import com.pwae.tabs.BlocksTab;
+import com.pwae.tabs.CosmeticsTab;
+import com.pwae.tabs.ItemsTab;
+import com.pwae.tabs.TempTab;
 import org.apache.logging.log4j.Logger;
 
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +30,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.Display;
 
-@Mod(modid = core.MODID, name = core.NAME, version = core.VERSION, acceptedMinecraftVersions = core.MC_VERSION)
-public class core {
+@Mod(modid = Core.MODID, name = Core.NAME, version = Core.VERSION, acceptedMinecraftVersions = Core.MC_VERSION)
+public class Core {
 
 	public static final String MODID = "pwae";
 	public static final String NAME = "PWaE Core";
@@ -39,7 +39,7 @@ public class core {
 	public static final String MC_VERSION = "[1.12.2]";
 	public static final String FULL_NAME = "Pixelmon: Wind and Earth";
 
-	public static final Logger LOGGER = LogManager.getLogger(core.MODID);
+	public static final Logger LOGGER = LogManager.getLogger(Core.MODID);
 	private String windowDisplayTitle;
 
 	 @EventHandler
@@ -91,10 +91,10 @@ public class core {
 		}
 	}
 
-	public static final com.pwae.Tabs.TempTab TempTab = new TempTab();
+	public static final com.pwae.tabs.TempTab TempTab = new TempTab();
 	public static final BlocksTab BlocksTab = new BlocksTab();
 	public static final ItemsTab ItemsTab = new ItemsTab();
-	public static final com.pwae.Tabs.CosmeticsTab CosmeticsTab = new CosmeticsTab();
+	public static final com.pwae.tabs.CosmeticsTab CosmeticsTab = new CosmeticsTab();
 	public static final ItemArmor.ArmorMaterial trainerHatMaterial = EnumHelper.addArmorMaterial("COPPER", MODID + ":copper", 15, new int[]{2, 5, 6, 2}, 9, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 0.0F);
 
 }

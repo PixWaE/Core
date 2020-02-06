@@ -1,4 +1,4 @@
-package com.pwae.Proxy;
+package com.pwae.proxy;
 
 import net.minecraft.item.Item;
 

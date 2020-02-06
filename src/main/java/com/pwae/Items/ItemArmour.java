@@ -1,6 +1,6 @@
-package com.pwae.Items;
+package com.pwae.items;
 
-import com.pwae.core;
+import com.pwae.Core;
 
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -11,18 +11,18 @@ public class ItemArmour extends net.minecraft.item.ItemArmor {
 
 	public ItemArmour(ArmorMaterial material, EntityEquipmentSlot slot, String name) {
 		super(material, 0, slot);
-		setCreativeTab(core.CosmeticsTab);
+		setCreativeTab(Core.CosmeticsTab);
 		setRegistryName(name);
 		setUnlocalizedName(name);
 		this.name = name;
 	}
 	
 	public void registerItemModel() {
-		core.proxy.registerItemRenderer(this, 0, name);
+		Core.proxy.registerItemRenderer(this, 0, name);
 	}
 
 	public void registerItemModel(Item item) {
-		core.proxy.registerItemRenderer(this, 0, name);
+		Core.proxy.registerItemRenderer(this, 0, name);
 	}
 
 }

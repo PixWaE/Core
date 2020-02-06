@@ -1,7 +1,6 @@
-package com.pwae.Tabs;
+package com.pwae.tabs;
 
-import com.pwae.Items.ModItems;
-import com.pwae.core;
+import com.pwae.items.ModItems;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;

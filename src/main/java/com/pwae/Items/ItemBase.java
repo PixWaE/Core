@@ -1,6 +1,6 @@
-package com.pwae.Items;
+package com.pwae.items;
 
-import com.pwae.core;
+import com.pwae.Core;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -16,7 +16,7 @@ public class ItemBase extends Item {
 	}
 	
 	public void registerItemModel() {
-		core.proxy.registerItemRenderer(this, 0, name);
+		Core.proxy.registerItemRenderer(this, 0, name);
 	}
 	
 	@Override

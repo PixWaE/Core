@@ -1,13 +1,13 @@
-package com.pwae.Blocks;
+package com.pwae.blocks;
 
+import com.pwae.Core;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
-import com.pwae.core;
 
 public class ModBlocks {
 
-    public static BlockOre oreCopper = new BlockOre("ore_copper").setCreativeTab(core.TempTab);
+    public static BlockOre oreCopper = new BlockOre("ore_copper").setCreativeTab(Core.TempTab);
     public static BlockOre tabBlock = new BlockOre("tabBlock");
 
     public static void register(IForgeRegistry<Block> registry) {

@@ -1,4 +1,4 @@
-package com.pwae.Blocks;
+package com.pwae.blocks;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
