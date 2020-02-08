@@ -67,7 +67,7 @@ public class Core {
         
 	}
 	
-	@SidedProxy(serverSide = "com.pwae.Proxy.CommonProxy", clientSide = "com.pwae.Proxy.ClientProxy")
+	@SidedProxy(serverSide = "com.pwae.proxy.CommonProxy", clientSide = "com.pwae.proxy.ClientProxy")
 	public static CommonProxy proxy;
 	
 	@Mod.EventBusSubscriber
