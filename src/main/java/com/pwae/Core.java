@@ -8,6 +8,7 @@ import com.pwae.tabs.BlocksTab;
 import com.pwae.tabs.CosmeticsTab;
 import com.pwae.tabs.ItemsTab;
 import com.pwae.tabs.TempTab;
+import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
 import org.apache.logging.log4j.LogManager;
@@ -30,15 +31,19 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.Display;
 
+import javax.swing.*;
+
 @Mod(modid = Core.MODID, name = Core.NAME, version = Core.VERSION, acceptedMinecraftVersions = Core.MC_VERSION)
 public class Core {
 
+	//Get Strings
 	public static final String MODID = "pwae";
 	public static final String NAME = "PWaE Core";
-	public static final String VERSION = "0.0.1";
+	public static final String VERSION = "0.2.0";
 	public static final String MC_VERSION = "[1.12.2]";
 	public static final String FULL_NAME = "Pixelmon: Wind and Earth";
 
+	//Setup the Logger
 	public static final Logger LOGGER = LogManager.getLogger(Core.MODID);
 	private String windowDisplayTitle;
 
@@ -46,9 +51,21 @@ public class Core {
 	 @SideOnly(Side.CLIENT)
 	 public void preinit(FMLPreInitializationEvent event) {
 		 if (proxy instanceof ClientProxy) {
-			 
+		 	//Check whether Game is launched using 64-bit Java
+			 if (!Minecraft.getMinecraft().isJava64bit()) {
+				 JOptionPane.showMessageDialog(null,
+						 "32-bit Java is not supported. The game will now close",
+						 "Unsupported Architecture",
+						 JOptionPane.WARNING_MESSAGE);
+				 LOGGER.error("Game should not be opened using 32-bit Java");
+				 System.exit(1);
+			 }
+			 //RAM Check Below
+			 //Insert Code here
+
+			 //Set Window Title
+			 Display.setTitle("PWaE Dev 0.2.0");
 		 }
-		 Display.setTitle(FULL_NAME);
 	 }
 	  
 	@EventHandler
@@ -58,7 +75,7 @@ public class Core {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		//LOGGER.info(core.NAME + "says hi!");
+		LOGGER.info("PWaE Core has loaded");
 		MinecraftForge.EVENT_BUS.register(new PlayerEvents());
 	}
 
@@ -79,11 +96,13 @@ public class Core {
 			ModBlocks.registerItemBlocks(event.getRegistry());
 		}
 
+		//Item Model Registry
 		@SubscribeEvent
 		public static void registerItems(ModelRegistryEvent event) {
 			ModItems.registerModels();
 		}
 
+		//Model Registry
 		@SubscribeEvent
 		public static void registerModels(ModelRegistryEvent event) {
 			ModItems.registerModels();
@@ -91,10 +110,13 @@ public class Core {
 		}
 	}
 
+	//Register Creative Tabs
 	public static final com.pwae.tabs.TempTab TempTab = new TempTab();
 	public static final BlocksTab BlocksTab = new BlocksTab();
 	public static final ItemsTab ItemsTab = new ItemsTab();
 	public static final com.pwae.tabs.CosmeticsTab CosmeticsTab = new CosmeticsTab();
+
+	//Register Armour Materials
 	public static final ItemArmor.ArmorMaterial trainerHatMaterial = EnumHelper.addArmorMaterial("COPPER", MODID + ":copper", 15, new int[]{2, 5, 6, 2}, 9, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 0.0F);
 
 }

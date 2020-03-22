@@ -11,3 +11,6 @@ itemGroup.temptab=PWaE Test
 itemGroup.blockstab=PWaE Blocks
 itemGroup.itemstab=PWaE Items
 itemGroup.cosmeticstab=PWaE Cosmetics
+
+#Badges
+item.example_badge.name=Example Badge

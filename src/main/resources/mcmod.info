@@ -1,16 +1,16 @@
 [
 {
   "modid": "pwae",
-  "name": "PWaE Core",
-  "description": "Example placeholder mod.",
+  "name": "PWaE: Core",
+  "description": "PWaE: Core.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
-  "updateUrl": "",
+  "updateUrl": "http://db.lockyzgroup.net/update/pwae/update.json",
   "authorList": ["L0ckyz, BlueBarracuda"],
   "credits": "The Forge and FML guys.",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": ["pixelmon"]
 }
 ]

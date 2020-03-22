@@ -6,7 +6,6 @@ import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class ModItems {
-
 	public static ItemArmour trainerHatWhite = new ItemArmour(Core.trainerHatMaterial, EntityEquipmentSlot.HEAD, "trainer_hat_white");
 	public static ItemArmour trainerHatBlack = new ItemArmour(Core.trainerHatMaterial, EntityEquipmentSlot.HEAD, "trainer_hat_black");
 	public static ItemArmour trainerHatGreen = new ItemArmour(Core.trainerHatMaterial, EntityEquipmentSlot.HEAD, "trainer_hat_green");
@@ -20,7 +19,7 @@ public class ModItems {
 				tabItems
 		);
 	}
-	
+
 	public static void registerModels() {
 		trainerHatWhite.registerItemModel();
 		trainerHatBlack.registerItemModel();
