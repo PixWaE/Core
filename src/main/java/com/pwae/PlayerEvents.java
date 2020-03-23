@@ -1,5 +1,6 @@
 package com.pwae;
 
+//Imports
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -17,7 +18,7 @@ public class PlayerEvents {
       if (!(event.getEntity() instanceof EntityPlayer))
           return;
       EntityPlayer player = (EntityPlayer)event.getEntity();
-	  player.sendStatusMessage(new TextComponentString(TextFormatting.WHITE + "" + TextFormatting.BOLD + "Welcome to PWaE 0.2.0d"), false);
+	  player.sendStatusMessage(new TextComponentString(TextFormatting.WHITE + "" + TextFormatting.BOLD + "Welcome to PWaE 0.3.0d"), false);
 	  player.sendStatusMessage(new TextComponentString(TextFormatting.WHITE + "" + TextFormatting.BOLD + "This version is a test. Expect bugs, crashes, etc. to be present"), false);
   }
 }

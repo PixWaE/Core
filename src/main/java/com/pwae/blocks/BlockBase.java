@@ -1,5 +1,6 @@
 package com.pwae.blocks;
 
+//Imports
 import com.pwae.Core;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -7,6 +8,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 
+//Extend that Block Class
 public class BlockBase extends Block {
 
     protected String name;

@@ -1,10 +1,12 @@
 package com.pwae.items;
 
+//Imports
 import com.pwae.Core;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
 
+//Ew Gross Modded Items
 public class ModItems {
 	public static ItemArmour trainerHatWhite = new ItemArmour(Core.trainerHatMaterial, EntityEquipmentSlot.HEAD, "trainer_hat_white");
 	public static ItemArmour trainerHatBlack = new ItemArmour(Core.trainerHatMaterial, EntityEquipmentSlot.HEAD, "trainer_hat_black");

@@ -1,5 +1,6 @@
 package com.pwae;
 
+//Imports
 import com.pwae.blocks.ModBlocks;
 import com.pwae.items.ModItems;
 import com.pwae.proxy.ClientProxy;
@@ -33,13 +34,14 @@ import org.lwjgl.opengl.Display;
 
 import javax.swing.*;
 
+//Make the mod a mod
 @Mod(modid = Core.MODID, name = Core.NAME, version = Core.VERSION, acceptedMinecraftVersions = Core.MC_VERSION)
 public class Core {
 
 	//Get Strings
 	public static final String MODID = "pwae";
 	public static final String NAME = "PWaE Core";
-	public static final String VERSION = "0.2.0";
+	public static final String VERSION = "0.3.0";
 	public static final String MC_VERSION = "[1.12.2]";
 	public static final String FULL_NAME = "Pixelmon: Wind and Earth";
 
@@ -47,6 +49,7 @@ public class Core {
 	public static final Logger LOGGER = LogManager.getLogger(Core.MODID);
 	private String windowDisplayTitle;
 
+	//Event Handler because YOLO
 	 @EventHandler
 	 @SideOnly(Side.CLIENT)
 	 public void preinit(FMLPreInitializationEvent event) {
@@ -57,36 +60,41 @@ public class Core {
 						 "32-bit Java is not supported. The game will now close",
 						 "Unsupported Architecture",
 						 JOptionPane.WARNING_MESSAGE);
-				 LOGGER.error("Game should not be opened using 32-bit Java");
+				 LOGGER.error("Modpack cannot be opened using 32-bit Java");
 				 System.exit(1);
 			 }
 			 //RAM Check Below
 			 //Insert Code here
 
 			 //Set Window Title
-			 Display.setTitle("PWaE Dev 0.2.0");
+			 Display.setTitle("PWaE Dev 0.3.0");
 		 }
 	 }
-	  
+
+	 //Another Event Handler because why not
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
         
 	}
 
+	//Yet Another Event Handler because events need to be handled
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		LOGGER.info("PWaE Core has loaded");
 		MinecraftForge.EVENT_BUS.register(new PlayerEvents());
 	}
 
+	//Another Event Handler deal with it
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
         
 	}
-	
+
+	//a Sided Proxy
 	@SidedProxy(serverSide = "com.pwae.proxy.CommonProxy", clientSide = "com.pwae.proxy.ClientProxy")
 	public static CommonProxy proxy;
-	
+
+	 //Event Bus Subscriber... IDK what TF that is...
 	@Mod.EventBusSubscriber
 	public static class RegistrationHandler {
 

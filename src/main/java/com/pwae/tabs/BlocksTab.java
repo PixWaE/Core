@@ -1,10 +1,12 @@
 package com.pwae.tabs;
 
+//Imports
 import com.pwae.blocks.ModBlocks;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 
+//Become a thing because a thing
 public class BlocksTab extends CreativeTabs {
 
     public BlocksTab() {

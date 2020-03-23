@@ -1,10 +1,13 @@
 package com.pwae.items;
 
+//Imports
 import com.pwae.Core;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 
+
+//Extend that Item Class
 public class ItemBase extends Item {
 
 	protected String name;
