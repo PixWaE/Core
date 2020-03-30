@@ -41,7 +41,7 @@ public class Core {
 	//Get Strings
 	public static final String MODID = "pwae";
 	public static final String NAME = "PWaE Core";
-	public static final String VERSION = "0.3.0";
+	public static final String VERSION = "0.4.0";
 	public static final String MC_VERSION = "[1.12.2]";
 	public static final String FULL_NAME = "Pixelmon: Wind and Earth";
 
@@ -67,7 +67,7 @@ public class Core {
 			 //Insert Code here
 
 			 //Set Window Title
-			 Display.setTitle("PWaE Dev 0.3.0");
+			 Display.setTitle("PWaE Dev 0.4.0");
 		 }
 	 }
 
