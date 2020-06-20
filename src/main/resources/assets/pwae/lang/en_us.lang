@@ -6,11 +6,12 @@ item.trainer_hat_white.name=White Trainer Hat
 item.trainer_hat_black.name=Black Trainer Hat
 item.trainer_hat_green.name=Green Trainer Hat
 
+#Badges
+item.badge_one.name=Badge One Test
+
 #Creative Tabs
-itemGroup.temptab=PWaE Test
+itemGroup.temptab=PWaE
 itemGroup.blockstab=PWaE Blocks
 itemGroup.itemstab=PWaE Items
 itemGroup.cosmeticstab=PWaE Cosmetics
-
-#Badges
-item.example_badge.name=Example Badge
+itemGroup.badgestab=PWaE Badges

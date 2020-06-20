@@ -5,10 +5,7 @@ import com.pwae.blocks.ModBlocks;
 import com.pwae.items.ModItems;
 import com.pwae.proxy.ClientProxy;
 import com.pwae.proxy.CommonProxy;
-import com.pwae.tabs.BlocksTab;
-import com.pwae.tabs.CosmeticsTab;
-import com.pwae.tabs.ItemsTab;
-import com.pwae.tabs.TempTab;
+import com.pwae.tabs.*;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
@@ -41,7 +38,7 @@ public class Core {
 	//Get Strings
 	public static final String MODID = "pwae";
 	public static final String NAME = "PWaE Core";
-	public static final String VERSION = "0.4.0";
+	public static final String VERSION = "0.5.0";
 	public static final String MC_VERSION = "[1.12.2]";
 	public static final String FULL_NAME = "Pixelmon: Wind and Earth";
 
@@ -67,7 +64,7 @@ public class Core {
 			 //Insert Code here
 
 			 //Set Window Title
-			 Display.setTitle("PWaE Dev 0.4.0");
+			 Display.setTitle(FULL_NAME);
 		 }
 	 }
 
@@ -120,9 +117,10 @@ public class Core {
 
 	//Register Creative Tabs
 	public static final com.pwae.tabs.TempTab TempTab = new TempTab();
-	public static final BlocksTab BlocksTab = new BlocksTab();
-	public static final ItemsTab ItemsTab = new ItemsTab();
+	public static final com.pwae.tabs.BlocksTab BlocksTab = new BlocksTab();
+	public static final com.pwae.tabs.ItemsTab ItemsTab = new ItemsTab();
 	public static final com.pwae.tabs.CosmeticsTab CosmeticsTab = new CosmeticsTab();
+	public static final com.pwae.tabs.BadgesTab BadgesTab = new BadgesTab();
 
 	//Register Armour Materials
 	public static final ItemArmor.ArmorMaterial trainerHatMaterial = EnumHelper.addArmorMaterial("COPPER", MODID + ":copper", 15, new int[]{2, 5, 6, 2}, 9, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 0.0F);
